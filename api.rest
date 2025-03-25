@@ -1,0 +1,61 @@
+
+POST http://localhost:8000/programa
+Content-Type:application/json
+
+{
+   
+  "codigoPrograma": 123,
+  "nombrePrograma": "Prueba"
+
+}
+###
+GET http://localhost:8000/programa
+###
+PUT http://localhost:8000/programa
+Content-Type: application/json
+
+{
+  "idPrograma":3,
+  "codigoPrograma": 202615,
+  "nombrePrograma": "Mecatronica"
+}
+###
+DELETE http://localhost:8000/programa/4
+
+//CRUDS APRENDICES
+###
+POST http://localhost:8000/aprendiz
+Content-Type: application/json
+
+{
+  "documento_aprendiz": "123456789",
+  "nombre_aprendiz": "Juan",
+  "apellido_aprendiz": "Pérez",
+  "telefono_aprendiz": "3001234567",
+  "email_aprendiz": "juan.perez@example.com",
+  "password_aprendiz": "password123",
+  "ficha_idFicha": 1,
+  "estado_aprendiz_idEstado_aprendiz": 1,
+  "tipo_documento_idTipo_documento": 2
+}
+
+###
+GET http://localhost:8000/aprendiz
+###
+PUT http://localhost:8000/aprendiz
+Content-Type: application/json
+
+{
+  "idAprendiz":2,
+  "documento_aprendiz": "123456789",
+  "nombre_aprendiz": "santiago",
+  "apellido_aprendiz": "Reyes",
+  "telefono_aprendiz": "3115336584",
+  "email_aprendiz": "santiago.reyes@example.com",
+  "password_aprendiz": "delunoaldiezf",
+  "ficha_idFicha": 1,
+  "estado_aprendiz_idEstado_aprendiz": 1,
+  "tipo_documento_idTipo_documento": 2
+}
+###
+DELETE http://localhost:8000/aprendiz/1
