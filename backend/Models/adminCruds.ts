@@ -8,7 +8,7 @@ interface DataAdmin {
 
 export const addProgram = async (programa: DataAdmin) => {
   try {
-    console.log("📌 Insertando en la base de datos:", programa);
+    console.log(" Insertando en la base de datos:", programa);
 
     const result = await Conexion.execute(
       "INSERT INTO programa (codigo_programa, nombre_programa) VALUES (?, ?);",

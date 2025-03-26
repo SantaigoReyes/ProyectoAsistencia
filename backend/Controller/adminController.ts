@@ -12,7 +12,6 @@ import {
   updateAprendiz,
   viewAprendiz,
 } from "../Models/adminCruds.ts";
-
 //Controller Programa
 export const postPrograma = async (ctx: any) => {
   const { request, response } = ctx;

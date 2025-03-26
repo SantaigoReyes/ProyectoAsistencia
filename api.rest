@@ -1,4 +1,12 @@
+POST http://localhost:8000/login/funcionario
+Content-Type: application/json
 
+{
+  "username": "1052391445",
+  "password": "Ines1087"
+}
+
+###
 POST http://localhost:8000/programa
 Content-Type:application/json
 
