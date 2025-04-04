@@ -1,5 +1,4 @@
 // deno-lint-ignore-file
-import { request } from "../../../Users/santi/AppData/Local/deno/npm/registry.npmjs.org/undici-types/6.20.0/api.d.ts";
 import {
   getFichasActiva,
   getInstructores,

@@ -1,8 +1,8 @@
 //Ver si hay ficha
 import { Conexion } from "./Conexion.ts";
 interface datosAIF {
-  idFicha: number;
   idFuncionario: number;
+  idFicha: number;
 }
 export const getFichasActiva = async () => {
   return await Conexion.query(
