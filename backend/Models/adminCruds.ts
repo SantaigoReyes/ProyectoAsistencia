@@ -14,7 +14,7 @@ export const addProgram = async (programa: DataAdmin) => {
       "INSERT INTO programa (codigo_programa, nombre_programa) VALUES (?, ?);",
       [programa.codigoPrograma, programa.nombrePrograma]
     );
-
+    console.log("Resultado de la inserción:", result);
     return result;
   } catch (error) {
     return {

@@ -117,6 +117,7 @@ export const IniciarSesionFuncionario = async (ctx: any) => {
       },
     };
   } catch (error) {
+    // <-- Falta esta llave
     console.error("Error en IniciarSesionFuncionario:", error);
     ctx.response.status = 500;
     ctx.response.body = { msg: "Error interno del servidor" };

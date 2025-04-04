@@ -1,8 +1,27 @@
+### Asignar un instructor a una ficha
+POST http://localhost:8000/asignarAIF
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQzNzM1ODgwfQ.R_iYIOFcbtBB6EKYFspWw8FsHwTrPwVH3AkukXBvB0c
+
+{
+  "idFuncionario": 2,
+  "idFicha": 1
+}
+
+###
+GET http://localhost:8000/instructoresAIF
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQzNzIwOTgzfQ.kQdPDvfdU92J18N6U4bPBs0L8VMmXXpJRutGXQB_PnI
+  
+###
+GET http://localhost:8000/fichaAIF
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQzNzIwOTgzfQ.kQdPDvfdU92J18N6U4bPBs0L8VMmXXpJRutGXQB_PnI
+  
+###
 POST http://localhost:8000/login/funcionario
 Content-Type: application/json
 
 {
-  "email": "sreyes@gmail.com",
+  "email": "sreyesnino@gmail.com",
   "password": "1234"
 }
 
@@ -18,7 +37,7 @@ Content-Type:application/json
 }
 ###
 GET http://localhost:8000/programa
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQzMDU5MTQwfQ.k4ANH5ldXPM7CND8HGwvaZepHXejNQ3wbBxGnnT_aGo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQzMzE0NjYwfQ.MlKJU3NwXJtb3S9PvZ3X0nbFF3viSLmtn4jPM7LsfKY
 ###
 PUT http://localhost:8000/programa
 Content-Type: application/json

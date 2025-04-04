@@ -50,7 +50,7 @@ export default function Login() {
       // Redirige según el rol
       // Por ejemplo, si es "administrador" se va a /admin, si es "instructor" a /instructor, y los demás a /home
       if (userRole.toLowerCase() === "administrador") {
-        navigate("/admin", { replace: true });
+        navigate("/admin", { replace: true }); //migrar a dashBoard
       } else if (userRole.toLowerCase() === "instructor") {
         navigate("/instructor", { replace: true });
       } else {

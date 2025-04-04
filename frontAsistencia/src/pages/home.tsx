@@ -12,7 +12,7 @@ export default function Home() {
   };
 
   const goToAdminPanel = () => {
-    navigate("/admin"); // Redirige al panel de administración
+    navigate("/aprendiz"); // Redirige al panel de administración
   };
 
   return (
