@@ -1,5 +1,5 @@
 import { Conexion } from "./Conexion.ts";
-
+//CRUDS PARA PROGRAMA
 interface DataAdmin {
   idPrograma?: number;
   codigoPrograma: number; // cambiado a number para que coincida con el uso en addProgram

@@ -1,13 +1,33 @@
+POST http://localhost:8000/filtroFP
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tYnJlcyI6Ik1hcmNvIEFudG9uaW8iLCJyb2xlcyI6WyJJbnN0cnVjdG9yIl0sImV4cCI6MTc0NDA2NzQyOX0.c1TZAw8rRgiuqvmABLeJZ_Im7ykRTLCR3q_RoRpo4ZE
+
+{
+  "fechaInicio": "2025-04-01",
+  "fechaFin": "2025-04-02",
+  "idPrograma": 1
+}
+
+###
+GET http://localhost:8000/aprendices-por-ficha?idFicha=1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tYnJlcyI6Ik1hcmNvIEFudG9uaW8iLCJyb2xlcyI6WyJJbnN0cnVjdG9yIl0sImV4cCI6MTc0NDExNzMxMH0.qMVOP_eQ5QZtPxoZEtJ-x1ApRTVOmqBpkVSmbvK2oC4
+
+###
+GET http://localhost:8000/fichas-instructor
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tYnJlcyI6Ik1hcmNvIEFudG9uaW8iLCJyb2xlcyI6WyJJbnN0cnVjdG9yIl0sImV4cCI6MTc0NDExNzMxMH0.qMVOP_eQ5QZtPxoZEtJ-x1ApRTVOmqBpkVSmbvK2oC4
+
 ###
 POST http://localhost:8000/misAprendices
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tYnJlcyI6Ik1hcmNvIEFudG9uaW8iLCJyb2xlcyI6WyJJbnN0cnVjdG9yIl0sImV4cCI6MTc0MzgwNzU5NH0.b2THBW4IF9t19D5rT9zgjshuCybwoo1xZQV1zTU_S-Y
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tYnJlcyI6Ik1hcmNvIEFudG9uaW8iLCJyb2xlcyI6WyJJbnN0cnVjdG9yIl0sImV4cCI6MTc0NDA2NzQyOX0.c1TZAw8rRgiuqvmABLeJZ_Im7ykRTLCR3q_RoRpo4ZE
 
 {
   "idAprendiz": 2
 }
 ###
 GET http://localhost:8000/tipoAsistencia
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tYnJlcyI6Ik1hcmNvIEFudG9uaW8iLCJyb2xlcyI6WyJJbnN0cnVjdG9yIl0sImV4cCI6MTc0MzgzODY0NX0.TtDPPPTveLdUzpaLK1tNC5Mta6vnkeYWZp_12ILhu1A
+
 ### Asignar un instructor a una ficha
 POST http://localhost:8000/asignarAIF
 Content-Type: application/json
@@ -46,7 +66,8 @@ Content-Type:application/json
 }
 ###
 GET http://localhost:8000/programa
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQzMzE0NjYwfQ.MlKJU3NwXJtb3S9PvZ3X0nbFF3viSLmtn4jPM7LsfKY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tYnJlcyI6Ik1hcmNvIEFudG9uaW8iLCJyb2xlcyI6WyJJbnN0cnVjdG9yIl0sImV4cCI6MTc0NDEyNDQzOX0.atxHrICcscH3qMFgexhj4HuzneyISohAfrhyTyQduC0
+
 ###
 PUT http://localhost:8000/programa
 Content-Type: application/json
@@ -63,21 +84,24 @@ DELETE http://localhost:8000/programa/4
 ###
 POST http://localhost:8000/aprendiz
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQ0MTE5NzE0fQ.9vdZyK3GQ6-jiVw91pDztAZqq_06RkOb1HUhXFhPgcM
 
 {
-  "documento_aprendiz": "123456789",
-  "nombre_aprendiz": "Juan",
-  "apellido_aprendiz": "Pérez",
-  "telefono_aprendiz": "3001234567",
-  "email_aprendiz": "juan.perez@example.com",
-  "password_aprendiz": "password123",
+  
+  "documento_aprendiz": "987654321",
+  "nombre_aprendiz": "Lorem",
+  "apellido_aprendiz": "Mitalia",
+  "telefono_aprendiz": "310587455",
+  "email_aprendiz": "Lorem.Mitalia@example.com",
+  "password_aprendiz": "123456789",
   "ficha_idFicha": 1,
-  "estado_aprendiz_idEstado_aprendiz": 1,
-  "tipo_documento_idTipo_documento": 2
+  "estado_aprendiz_idEstado_aprendiz": 5,
+  "tipo_documento_idTipo_documento": 1
 }
 
 ###
 GET http://localhost:8000/aprendiz
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQ0MDgxNzE0fQ.o_5sRF5gEPJMA1LwbmFtInlkox_Jr-fwtglQI3GfjNU
 ###
 PUT http://localhost:8000/aprendiz
 Content-Type: application/json

@@ -34,10 +34,11 @@ export const IniciarSesion = async (ctx: any) => {
     }
 
     // Generar el token
+
     const token = await generarToken({
       id: aprendiz.idaprendiz,
       nombres: aprendiz.nombres_aprendiz,
-      role: aprendiz.role,
+      roles: [aprendiz.role], // ✅ Cambiado
     });
 
     // Responder con el token y datos del usuario
@@ -48,7 +49,7 @@ export const IniciarSesion = async (ctx: any) => {
       usuario: {
         id: aprendiz.idaprendiz,
         nombres: aprendiz.nombres_aprendiz,
-        role: aprendiz.role,
+        roles: [aprendiz.role], // ✅ Cambiado
       },
     };
   } catch (error) {

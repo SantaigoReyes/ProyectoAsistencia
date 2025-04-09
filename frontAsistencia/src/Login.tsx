@@ -53,6 +53,8 @@ export default function Login() {
         navigate("/admin", { replace: true }); //migrar a dashBoard
       } else if (userRole.toLowerCase() === "instructor") {
         navigate("/instructor", { replace: true });
+      } else if (userRole.toLowerCase() === "aprendiz") {
+        navigate("/aprendiz", { replace: true });
       } else {
         navigate("/home", { replace: true });
       }

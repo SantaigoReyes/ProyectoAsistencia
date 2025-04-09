@@ -4,6 +4,11 @@ import {
   getAsistenciaPorAprendiz,
   getTipoAsistencia,
 } from "../Controller/istructorCrud.ts";
+import { postAsistenciaFiltroFP } from "../Controller/asistenciaFiltroFPC.ts";
+import {
+  getAprendicesPorFicha,
+  getFichasPorInstructor,
+} from "../Models/punto4.ts";
 
 const routerInstructor = new Router();
 
@@ -13,10 +18,30 @@ routerInstructor.post(
   roleMiddleware(["Instructor"]),
   getAsistenciaPorAprendiz
 );
-routerInstructor.post(
+routerInstructor.get(
   "/tipoAsistencia",
   authMiddleware,
   roleMiddleware(["Instructor"]),
   getTipoAsistencia
+);
+routerInstructor.post(
+  "/filtroFP",
+  authMiddleware,
+  roleMiddleware(["Instructor"]),
+  postAsistenciaFiltroFP
+);
+
+//Punto 4
+routerInstructor.get(
+  "/fichas-instructor",
+  authMiddleware,
+  roleMiddleware(["Instructor"]), // ← cuidado con las mayúsculas si en BD es "Instructor"
+  getFichasPorInstructor
+);
+routerInstructor.get(
+  "/aprendices-por-ficha",
+  authMiddleware,
+  roleMiddleware(["Instructor", "Administrador"]),
+  getAprendicesPorFicha
 );
 export { routerInstructor };

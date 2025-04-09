@@ -176,7 +176,22 @@ export const deleteAprendizC = async (ctx: any) => {
       response.status = 404;
       response.body = { success: false, msg: "Error Programa no encontrado" };
     }
-  } catch (error) {}
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      response.status = 400;
+      response.body = {
+        success: false,
+        msg: "Error en el formato de la solicitud",
+        errors: error.issues,
+      };
+    } else {
+      response.status = 500;
+      response.body = {
+        success: false,
+        msg: "Error interno en el servidor",
+      };
+    }
+  }
 };
 export const putAprendiz = async (ctx: any) => {
   const { request, response } = ctx;

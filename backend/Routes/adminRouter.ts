@@ -15,6 +15,17 @@ import {
 } from "../Controller/adminAIF.ts";
 import { Router } from "../Dependencies/dependencies.ts";
 import { authMiddleware, roleMiddleware } from "../Middlewares/authAdmin.ts";
+import {
+  deleteFicha,
+  deleteInstructor,
+  getFicha,
+  getInstructor,
+  postFicha,
+  postInstructor,
+  putFicha,
+  putInstructor,
+} from "../Controller/adminCrudMaiController.ts";
+import { uploadImage } from "../Middlewares/imageUpload.ts";
 
 const routerPrograma = new Router();
 
@@ -51,7 +62,7 @@ routerPrograma.post(
 routerPrograma.get(
   "/programa",
   authMiddleware,
-  roleMiddleware(["Administrador"]),
+  roleMiddleware(["Administrador", "Instructor"]),
   getProgram
 );
 routerPrograma.put(
@@ -91,6 +102,59 @@ routerPrograma.delete(
   authMiddleware,
   roleMiddleware(["Administrador"]),
   deleteAprendizC
+);
+//Rutas -MAira Adminisrador Crud
+routerPrograma.get(
+  "/fichas",
+  authMiddleware,
+  roleMiddleware(["Administrador"]),
+  getFicha
+);
+routerPrograma.post(
+  "/fichas",
+  authMiddleware,
+  roleMiddleware(["Administrador"]),
+  postFicha
+);
+routerPrograma.put(
+  "/fichas/:idficha",
+  authMiddleware,
+  roleMiddleware(["Administrador"]),
+  putFicha
+);
+routerPrograma.delete(
+  "/fichas/:idficha",
+  authMiddleware,
+  roleMiddleware(["Administrador"]),
+  deleteFicha
+);
+
+routerPrograma.get(
+  "/listar-instructor",
+  authMiddleware,
+  roleMiddleware(["Administrador"]),
+  getInstructor
+);
+routerPrograma.post(
+  "/crear-instructor",
+  authMiddleware,
+  roleMiddleware(["Administrador"]),
+  uploadImage,
+  postInstructor
+);
+routerPrograma.put(
+  "/editar-instructor/:idfuncionario",
+  authMiddleware,
+  roleMiddleware(["Administrador"]),
+  uploadImage,
+  putInstructor
+);
+routerPrograma.delete(
+  "/eliminar-instructor/:idfuncionario",
+  authMiddleware,
+  roleMiddleware(["Administrador"]),
+  uploadImage,
+  deleteInstructor
 );
 
 export { routerPrograma };
