@@ -11,6 +11,7 @@ import PanelInstructor from "./Components/instructor/listaAprendicesACargo";
 import NavbarInstructor from "./Components/instructor/navbarInstructor";
 import HistorialAsistencias from "./Components/instructor/historialAsistencia";
 import AdminInstructorPanel from "./Components/Admin/instructor";
+import AdminFichaPanel from "./Components/Admin/fichas";
 const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -55,6 +56,7 @@ const App: React.FC = () => {
           <Route path="/crudAdmin" element={<AdminPanel />} />
           <Route path="/aprendices" element={<AprendizPanel />} />
           <Route path="/instructorAdmin" element={<AdminInstructorPanel />} />
+          <Route path="/fichaAdmin" element={<AdminFichaPanel />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -6,9 +6,8 @@ import { Data } from "https://deno.land/x/oak@v17.1.4/types.ts";
 import { z } from "../Dependencies/dependencies.ts";
 interface FichaData {
   idficha: number | null;
-  codiggo_ficha: string;
+  codigo_ficha: string;
   fecha_inicio: Data;
-
   programa_idprograma: number;
   nombre_programa: string;
 
@@ -53,12 +52,10 @@ export const ListaFicha = async () => {
 
 export const CrearFicha = async (ficha: FichaData) => {
   try {
-    const consulta = `
-        INSERT INTO ficha (codigo_ficha, fecha_inicio, programa_idprograma, estado_ficha_idestado_ficha)
-        VALUES (?, ?, ?, ?)      
-        `;
+    const consulta = ` INSERT INTO ficha (codigo_ficha, fecha_inicio, programa_idprograma, estado_ficha_idestado_ficha)
+       VALUES (?, ?, ?, ?)  `;
     await Conexion.execute(consulta, [
-      ficha.codiggo_ficha,
+      ficha.codigo_ficha,
       ficha.fecha_inicio,
       ficha.programa_idprograma,
       ficha.estado_ficha_idestado_ficha,
@@ -116,10 +113,11 @@ export const ActualizarFicha = async (idficha: number, data: any) => {
 
     if (result.affectedRows === 0) {
       return {
-        success: true,
-        mdg: "ficha no encontrada",
+        success: false,
+        msg: "Ficha no encontrada",
       };
     }
+
     return {
       success: true,
       msg: "Ficha actualizada",
@@ -142,8 +140,8 @@ export const ActualizarFicha = async (idficha: number, data: any) => {
 export const EliminaFicha = async (idficha: number) => {
   try {
     const consulta = await Conexion.execute(
-      ` DELETE FROM ficha WHERE idficha = ?,
-            [idficha] `
+      `DELETE FROM ficha WHERE idficha = ?`,
+      [idficha]
     );
 
     if (consulta.affectedRows === 0) {
@@ -181,7 +179,8 @@ interface InstructorData {
 
 export const ListarIntructores = async () => {
   try {
-    const { rows: instructores } = await Conexion.execute(`
+    const { rows: instructores } = await Conexion.execute(
+      `
         SELECT 
             f.idfuncionario,
             f.documento,
@@ -196,7 +195,9 @@ export const ListarIntructores = async () => {
         JOIN tipo_documento td ON f.tipo_documento_idtipo_documento = td.idtipo_documento
         JOIN funcionario_has_tipo_funcionario ftf ON f.idfuncionario = ftf.funcionario_idfuncionario
         WHERE ftf.tipo_funcionario_idtipo_funcionario = ?; 
-        `);
+        `,
+      [2]
+    );
 
     console.log("Listado de instructores: ", instructores);
 
@@ -307,11 +308,25 @@ interface InstructorData2 {
   password: string;
   tipo_documento_idtipo_documento: number;
 }
+
 export const ActualizarInstructor = async (
   idfuncionario: number | null,
   data: InstructorData2
 ) => {
   try {
+    // Si no se envía una nueva imagen, usamos la actual de la base de datos
+    if (!data.url_imgfuncionario && idfuncionario) {
+      const result: any = await Conexion.execute(
+        "SELECT url_imgfuncionario FROM funcionario WHERE idfuncionario = ?",
+        [idfuncionario]
+      );
+
+      const actual = result.rows?.[0]; // Accede a la primera fila
+
+      data.url_imgfuncionario = actual?.url_imgfuncionario || "";
+    }
+
+    // Validación con Zod
     const datosEntrada = z
       .object({
         idfuncionario: z.number().nullable(),
@@ -328,12 +343,17 @@ export const ActualizarInstructor = async (
 
     const result: any = await Conexion.execute(
       `
-            UPDATE funcionario
-            SET documento = ?, nombres = ?, apellidos = ?, email = ?, 
-                telefono = ?, url_imgfuncionario = ?, password = ?, 
-                tipo_documento_idtipo_documento = ?
-            WHERE idfuncionario = ?
-            `,
+      UPDATE funcionario
+      SET documento = ?, 
+          nombres = ?, 
+          apellidos = ?, 
+          email = ?, 
+          telefono = ?, 
+          url_imgfuncionario = ?, 
+          password = ?, 
+          tipo_documento_idtipo_documento = ?
+      WHERE idfuncionario = ?
+    `,
       [
         datosEntrada.documento,
         datosEntrada.nombres,
@@ -359,12 +379,12 @@ export const ActualizarInstructor = async (
       msg: "Instructor actualizado CORRECTAMENTE",
     };
   } catch (error) {
-    console.error("Error en ActualizarInstructor:", error); // <-- Depuración
+    console.error("Error en ActualizarInstructor:", error);
 
     if (error instanceof z.ZodError) {
       return {
         success: false,
-        msg: "",
+        msg: error.message,
       };
     } else {
       return {
@@ -377,16 +397,16 @@ export const ActualizarInstructor = async (
 
 export const EliminarInstructor = async (idfuncionario: number) => {
   try {
-    // 1. Eliminar la relación en la tabla de rompimiento
+    // 1. Eliminar relación de la tabla intermedia
     await Conexion.execute(
-      `DELETE FROM funcionario_has_tipo_funcionario WHERE funcionario_idfuncionario = ?,
-        [idfuncionario] `
+      `DELETE FROM funcionario_has_tipo_funcionario WHERE funcionario_idfuncionario = ?`,
+      [idfuncionario]
     );
 
-    // 2. Eliminar el funcionario de la tabla principal
+    // 2. Eliminar funcionario
     const result: any = await Conexion.execute(
-      ` DELETE FROM funcionario WHERE idfuncionario = ?,
-        [idfuncionario] `
+      `DELETE FROM funcionario WHERE idfuncionario = ?`,
+      [idfuncionario]
     );
 
     if (result.affectedRows === 0) {
@@ -395,6 +415,7 @@ export const EliminarInstructor = async (idfuncionario: number) => {
         msg: "Instructor no encontrado",
       };
     }
+
     return {
       success: true,
       msg: "Instructor eliminado CORRECTAMENTE",
@@ -413,7 +434,7 @@ export const EliminarInstructor = async (idfuncionario: number) => {
 export const ListaFichaEstado = async () => {
   try {
     const { rows: fichas } = await Conexion.execute(
-      ` SELECT estado_ficha FROM estado_ficha `
+      `SELECT idestado_ficha, estado_ficha FROM estado_ficha; `
     );
     console.log("lista de las fichas:", fichas);
 

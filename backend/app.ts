@@ -1,4 +1,4 @@
-import { Application, oakCors } from "./Dependencies/dependencies.ts";
+import { Application, oakCors, send } from "./Dependencies/dependencies.ts";
 import { routerPrograma } from "./Routes/adminRouter.ts";
 import { routerLogin } from "./Routes/loginRouter.ts";
 import { routerInstructor } from "./Routes/routerInstructor.ts";
@@ -7,6 +7,18 @@ const app = new Application();
 
 app.use(oakCors());
 
+// 2) Servir estáticos: cualquier GET a /uploads/*
+app.use(async (ctx, next) => {
+  if (ctx.request.url.pathname.startsWith("/uploads")) {
+    // Si tu carpeta real está en ./backend/uploads, ajusta join:
+    await send(ctx, ctx.request.url.pathname, {
+      root: Deno.cwd(), // raíz de tu proyecto
+      index: "index.html", // no necesario, pero puede ir
+    });
+  } else {
+    await next();
+  }
+});
 // Usar rutas del router de admin (programa y aprendiz)
 app.use(routerPrograma.routes());
 app.use(routerPrograma.allowedMethods());

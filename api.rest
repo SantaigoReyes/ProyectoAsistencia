@@ -1,3 +1,28 @@
+POST http://localhost:8000/fichas
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQ0MTkyNzYzfQ.cXvw3UT_i5NpRjZm_EmVD8cRI03Y1Y8BUUulROqlF9E
+
+{
+    "codigo_ficha":"1414",
+    "fecha_inicio":"2022-09-08",
+    "programa_idprograma":1,
+    "estado_ficha_idestado_ficha":1
+
+}
+
+###
+PUT http://localhost:8000/fichas/7
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQ0MTkyNzYzfQ.cXvw3UT_i5NpRjZm_EmVD8cRI03Y1Y8BUUulROqlF9E
+
+{
+    "codigo_ficha":"25254",
+    "fecha_inicio":"2025-09-08",
+    "programa_idprograma":1,
+    "estado_ficha_idestado_ficha":1
+
+}
+###
 POST http://localhost:8000/filtroFP
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tYnJlcyI6Ik1hcmNvIEFudG9uaW8iLCJyb2xlcyI6WyJJbnN0cnVjdG9yIl0sImV4cCI6MTc0NDA2NzQyOX0.c1TZAw8rRgiuqvmABLeJZ_Im7ykRTLCR3q_RoRpo4ZE
@@ -50,9 +75,10 @@ POST http://localhost:8000/login/funcionario
 Content-Type: application/json
 
 {
-  "email": "jcmp.marcos@hotmail.com",
-  "password": "Ines1087"
+  "email": "sreyesnino@gmail.com",
+  "password": "1234"
 }
+
 
 ###
 POST http://localhost:8000/programa

@@ -1,4 +1,3 @@
-// components/instructor/Navbar.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
 import {
@@ -13,16 +12,13 @@ import {
   IconButton,
   AppBar,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
+import senaLogo from "../../assets/sena-logo.png";
 
 const drawerWidth = 240;
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  // Simulación de obtener el nombre del usuario desde el localStorage o JWT
   const [nombreAdmin, setNombreAdmin] = useState("");
 
   useEffect(() => {
@@ -30,113 +26,110 @@ const Navbar: React.FC = () => {
     setNombreAdmin(usuario);
   }, []);
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
   const handleLogout = () => {
     localStorage.clear();
     navigate("/");
   };
 
   const drawer = (
-    <Box sx={{ backgroundColor: "cyan", height: "100%", color: "black" }}>
-      <Toolbar>
-        <Typography variant="h6" sx={{ color: "white" }}>
-          Mi Tienda
-        </Typography>
+    <Box sx={{ backgroundColor: "#155724", height: "100%", color: "white" }}>
+      <Toolbar sx={{ justifyContent: "center" }}>
+        <img src={senaLogo} alt="SENA Logo" style={{ height: 60 }} />
       </Toolbar>
       <List>
-        <ListItem disablePadding>
-          <ListItemButton onClick={() => navigate("/crudAdmin")}>
-            <ListItemText primary="Programa" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton onClick={() => navigate("/aprendices")}>
-            <ListItemText primary="Aprendices" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton onClick={() => navigate("/instructorAdmin")}>
-            <ListItemText primary="Instructor" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton onClick={() => navigate("/ficha")}>
-            <ListItemText primary="Fichas" />
-          </ListItemButton>
-        </ListItem>
+        {[
+          { text: "Programa", route: "/crudAdmin" },
+          { text: "Aprendices", route: "/aprendices" },
+          { text: "Instructor", route: "/instructorAdmin" },
+          { text: "Fichas", route: "/fichaAdmin" },
+        ].map(({ text, route }) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton onClick={() => navigate(route)}>
+              <ListItemText primary={text} sx={{ pl: 1 }} />
+            </ListItemButton>
+          </ListItem>
+        ))}
       </List>
     </Box>
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
-      {/* Top bar */}
+    <Box sx={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
+      {/* AppBar superior */}
       <AppBar
         position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          height: 80,
+          justifyContent: "center",
+          backgroundColor: "#19692c",
+        }}
       >
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton
-              color="inherit"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2 }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap component="div">
-              Bienvenido, {nombreAdmin}
-            </Typography>
-          </Box>
-          <IconButton color="inherit" onClick={handleLogout}>
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: "bold", textAlign: "center", width: "100%" }}
+          >
+            Bienvenido, {nombreAdmin}
+          </Typography>
+          <IconButton
+            color="inherit"
+            onClick={handleLogout}
+            sx={{ position: "absolute", right: 20 }}
+          >
             <LogoutIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
 
-      {/* Drawer permanente en pantallas grandes */}
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          display: { xs: "none", sm: "block" },
-          "& .MuiDrawer-paper": {
+      {/* Drawer lateral permanente */}
+      <Box sx={{ display: "flex", flexGrow: 1 }}>
+        <Drawer
+          variant="permanent"
+          sx={{
             width: drawerWidth,
-            boxSizing: "border-box",
-            backgroundColor: "pink",
-          },
-        }}
-        open
-      >
-        {drawer}
-      </Drawer>
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: drawerWidth,
+              boxSizing: "border-box",
+              backgroundColor: "#155724",
+              color: "white",
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
 
-      {/* Drawer móvil (tipo hamburguesa) */}
-      <Drawer
-        variant="temporary"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
-        ModalProps={{ keepMounted: true }}
+        {/* Contenido principal */}
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            backgroundColor: "#f5f5f5",
+            minHeight: "calc(100vh - 80px - 50px)",
+          }}
+        >
+          <Toolbar /> {/* espacio para el AppBar */}
+          <Outlet />
+        </Box>
+      </Box>
+
+      {/* Footer */}
+      <Box
+        component="footer"
         sx={{
-          display: { xs: "block", sm: "none" },
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            backgroundColor: "pink",
-          },
+          height: 50,
+          backgroundColor: "#155724",
+          color: "white",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        {drawer}
-      </Drawer>
-
-      {/* Contenido principal */}
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Toolbar /> {/* para dar espacio debajo del AppBar */}
-        <Outlet />
+        <Typography variant="body2">
+          © 2025 SENA. Todos los derechos reservados.
+        </Typography>
       </Box>
     </Box>
   );

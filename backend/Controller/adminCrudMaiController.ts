@@ -302,39 +302,47 @@ export const putInstructor = async (ctx: any) => {
     }
 
     const fields = ctx.state.fields;
-    console.log("Campos recibidos:", fields);
+    console.log("Campos recibidos en PUT:", fields);
 
-    // Obtener la URL de la imagen si es que se ha cargado una nueva imagen
-    const nuevaImagenUrl = fields.url_imgfuncionario || ""; // Usar ctx.state.fields.url_imgfuncionario
+    // Validar si los campos esenciales vienen
+    const camposObligatorios = [
+      "documento",
+      "nombres",
+      "apellidos",
+      "email",
+      "telefono",
+      "password",
+      "tipo_documento_idtipo_documento",
+    ];
 
-    type instructorData = {
-      idfuncionario: number | null;
-      documento: string;
-      nombres: string;
-      apellidos: string;
-      email: string;
-      telefono: string;
-      url_imgfuncionario: string;
-      password: string;
-      tipo_documento_idtipo_documento: number;
-    };
+    for (const campo of camposObligatorios) {
+      if (!fields[campo]) {
+        response.status = 400;
+        response.body = {
+          success: false,
+          msg: `Campo obligatorio faltante: ${campo}`,
+        };
+        return;
+      }
+    }
 
-    // Datos actualizados que se enviarán al backend
+    const nuevaImagenUrl = fields.url_imgfuncionario ?? ""; // Puede estar vacío si no se envió imagen
+
+    // Estructura del objeto a enviar a la función de actualización
     const datosActualizados = {
-      idfuncionario: idfuncionario,
+      idfuncionario,
       documento: fields.documento,
       nombres: fields.nombres,
       apellidos: fields.apellidos,
       email: fields.email,
       telefono: fields.telefono,
-      url_imgfuncionario: nuevaImagenUrl, // Aquí es donde se agrega la URL de la nueva imagen
+      url_imgfuncionario: nuevaImagenUrl,
       password: fields.password,
-      tipo_documento_idtipo_documento: Number(
+      tipo_documento_idtipo_documento: parseInt(
         fields.tipo_documento_idtipo_documento
       ),
-    } as instructorData;
+    };
 
-    // Llamar a la función para actualizar el instructor en la base de datos
     const result = await ActualizarInstructor(idfuncionario, datosActualizados);
 
     if (result.success) {

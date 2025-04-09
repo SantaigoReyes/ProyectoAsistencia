@@ -18,6 +18,7 @@ import { authMiddleware, roleMiddleware } from "../Middlewares/authAdmin.ts";
 import {
   deleteFicha,
   deleteInstructor,
+  getEstadoFicha,
   getFicha,
   getInstructor,
   postFicha,
@@ -62,7 +63,7 @@ routerPrograma.post(
 routerPrograma.get(
   "/programa",
   authMiddleware,
-  roleMiddleware(["Administrador", "Instructor"]),
+
   getProgram
 );
 routerPrograma.put(
@@ -153,8 +154,12 @@ routerPrograma.delete(
   "/eliminar-instructor/:idfuncionario",
   authMiddleware,
   roleMiddleware(["Administrador"]),
-  uploadImage,
-  deleteInstructor
+  deleteInstructor // ✅ sin uploadImage
 );
-
+routerPrograma.get(
+  "/estado-ficha",
+  authMiddleware,
+  roleMiddleware(["Administrador"]),
+  getEstadoFicha
+);
 export { routerPrograma };

@@ -9,23 +9,28 @@ export const uploadImage = async (ctx: any, next: any) => {
       const file = body.get("imagen");
 
       const fields: Record<string, string> = {};
+
+      // Extrae campos de texto
       for (const [key, value] of body.entries()) {
         if (typeof value === "string") {
           fields[key] = value;
         }
       }
 
+      // Si hay archivo, lo guarda
       if (file && file instanceof File) {
         await ensureDir("uploads");
-        const fileName = file.name ?? `${Date.now()}_imagen.jpg`;
+
+        const timestamp = Date.now();
+        const fileName = `${timestamp}_${file.name}`;
         const filePath = `uploads/${fileName}`;
         const fileBytes = new Uint8Array(await file.arrayBuffer());
+
         await Deno.writeFile(filePath, fileBytes);
         fields.url_imgfuncionario = `/uploads/${fileName}`;
-      } else {
-        fields.url_imgfuncionario;
       }
 
+      // Guarda los campos procesados
       ctx.state.fields = fields;
     } else {
       ctx.state.fields = {};
