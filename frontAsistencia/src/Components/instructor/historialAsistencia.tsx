@@ -86,8 +86,16 @@ const HistorialAsistencias = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-      <Box sx={{ p: 4 }}>
-        <Typography variant="h4" gutterBottom>
+      <Box sx={{ p: 4, backgroundColor: "#f4f6f5", minHeight: "100vh" }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{
+            fontWeight: "bold",
+            color: "#004118", // Verde oscuro SENA
+            mb: 4,
+          }}
+        >
           Historial de Asistencias
         </Typography>
 
@@ -97,18 +105,40 @@ const HistorialAsistencias = () => {
           </Alert>
         )}
 
-        <Box sx={{ display: "flex", gap: 2, mb: 3, flexWrap: "wrap" }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            mb: 4,
+            flexWrap: "wrap",
+            alignItems: "center",
+          }}
+        >
           <DatePicker
             label="Fecha Inicio"
             value={fechaInicio}
             onChange={(newValue) => setFechaInicio(newValue)}
+            slotProps={{
+              textField: {
+                variant: "outlined",
+                sx: { backgroundColor: "white", borderRadius: 2 },
+              },
+            }}
           />
           <DatePicker
             label="Fecha Fin"
             value={fechaFin}
             onChange={(newValue) => setFechaFin(newValue)}
+            slotProps={{
+              textField: {
+                variant: "outlined",
+                sx: { backgroundColor: "white", borderRadius: 2 },
+              },
+            }}
           />
-          <FormControl sx={{ minWidth: 200 }}>
+          <FormControl
+            sx={{ minWidth: 200, backgroundColor: "white", borderRadius: 2 }}
+          >
             <InputLabel id="programa-label">Programa</InputLabel>
             <Select
               labelId="programa-label"
@@ -123,26 +153,45 @@ const HistorialAsistencias = () => {
               ))}
             </Select>
           </FormControl>
-          <Button variant="contained" onClick={handleBuscar}>
+          <Button
+            variant="contained"
+            onClick={handleBuscar}
+            sx={{
+              backgroundColor: "#007A33", // Verde institucional SENA
+              ":hover": { backgroundColor: "#005f27" },
+              borderRadius: 2,
+              fontWeight: "bold",
+            }}
+          >
             Buscar
           </Button>
         </Box>
 
         {asistencias.length > 0 && (
-          <Paper>
+          <Paper elevation={3} sx={{ borderRadius: 3, overflow: "hidden" }}>
             <Table>
               <TableHead>
-                <TableRow>
-                  <TableCell>Fecha</TableCell>
-                  <TableCell>Tipo</TableCell>
-                  <TableCell>Aprendiz</TableCell>
-                  <TableCell>Ficha</TableCell>
-                  <TableCell>Programa</TableCell>
+                <TableRow sx={{ backgroundColor: "#007A33" }}>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Fecha
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Tipo
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Aprendiz
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Ficha
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Programa
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {asistencias.map((a) => (
-                  <TableRow key={a.idasistencia}>
+                  <TableRow key={a.idasistencia} hover>
                     <TableCell>
                       {format(new Date(a.fecha_asistencia), "dd/MM/yyyy")}
                     </TableCell>
@@ -156,11 +205,11 @@ const HistorialAsistencias = () => {
                           textTransform: "capitalize",
                           color:
                             a.nombre_tipo_asistencia === "Presente"
-                              ? "green"
+                              ? "#007A33"
                               : a.nombre_tipo_asistencia === "Tardanza"
-                              ? "orange"
+                              ? "#f57c00"
                               : a.nombre_tipo_asistencia === "Ausente"
-                              ? "red"
+                              ? "#d32f2f"
                               : "#000",
                         }}
                       >
@@ -191,5 +240,4 @@ const HistorialAsistencias = () => {
     </LocalizationProvider>
   );
 };
-
 export default HistorialAsistencias;

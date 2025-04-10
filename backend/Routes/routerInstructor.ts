@@ -9,6 +9,10 @@ import {
   getAprendicesPorFicha,
   getFichasPorInstructor,
 } from "../Models/punto4.ts";
+import {
+  postAsistencia,
+  putAsistencia,
+} from "../Controller/asistenciaController.ts";
 
 const routerInstructor = new Router();
 
@@ -43,5 +47,19 @@ routerInstructor.get(
   authMiddleware,
   roleMiddleware(["Instructor", "Administrador"]),
   getAprendicesPorFicha
+);
+
+//Rutas Crud Asistencia Maira
+routerInstructor.post(
+  "/crear-asistencia",
+  authMiddleware,
+  roleMiddleware(["Instructor", "Administrador"]),
+  postAsistencia
+);
+routerInstructor.put(
+  "/editar-asistencia",
+  authMiddleware,
+  roleMiddleware(["Instructor", "Administrador"]),
+  putAsistencia
 );
 export { routerInstructor };

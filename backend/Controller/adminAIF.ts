@@ -32,15 +32,63 @@ export const asignarAIF = async (ctx: any) => {
   const { request, response } = ctx;
   try {
     const body = await request.body.json();
-    const result = await asignarInstructoresAFicha(body);
-    response.status = 201;
-    response.body = {
-      success: true,
-      msg: true,
-      result,
-    };
+
+    // Desestructuramos
+    const { idFuncionario, idFicha } = body;
+
+    // Validaciones de tipo
+    if (!idFuncionario || !idFicha || isNaN(idFuncionario) || isNaN(idFicha)) {
+      response.status = 400;
+      response.body = {
+        success: false,
+        msg: "Los datos enviados no son válidos. Se requieren 'idFuncionario' y 'idFicha' como números.",
+        datosRecibidos: body,
+      };
+      return;
+    }
+
+    // Intentamos asignar
+    const result = await asignarInstructoresAFicha({ idFuncionario, idFicha });
+
+    // Si hubo un error interno en la función
+    if (result?.success === false) {
+      response.status = 500;
+      response.body = {
+        success: false,
+        msg: "Error al insertar en la base de datos.",
+        error: result.error?.message ?? "Error desconocido.",
+      };
+      return;
+    }
+
+    // Si no se afectó ninguna fila, posiblemente ya estaba insertado
+    if (result.rowsAffected === 0) {
+      response.status = 200;
+      response.body = {
+        success: false,
+        msg: "Este instructor ya está asignado a esta ficha.",
+        datos: { idFuncionario, idFicha },
+      };
+    } else {
+      // Inserción exitosa
+      response.status = 201;
+      response.body = {
+        success: true,
+        msg: "Instructor asignado correctamente a la ficha.",
+        datosAsignados: {
+          idFuncionario,
+          idFicha,
+        },
+        resultadoDB: result,
+      };
+    }
   } catch (error) {
+    console.error("Error en asignarAIF:", error);
     response.status = 500;
-    response.body = { success: false, msg: "Error al agregar el Programa" };
+    response.body = {
+      success: false,
+      msg: "Ocurrió un error inesperado al asignar el instructor.",
+      error: error.message,
+    };
   }
 };

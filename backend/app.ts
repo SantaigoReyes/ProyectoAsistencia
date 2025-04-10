@@ -1,5 +1,6 @@
 import { Application, oakCors, send } from "./Dependencies/dependencies.ts";
 import { routerPrograma } from "./Routes/adminRouter.ts";
+import { routerAprendiz } from "./Routes/aprendizRouter.ts";
 import { routerLogin } from "./Routes/loginRouter.ts";
 import { routerInstructor } from "./Routes/routerInstructor.ts";
 
@@ -31,6 +32,8 @@ app.use(routerLogin.allowedMethods());
 
 app.use(routerInstructor.routes());
 app.use(routerInstructor.allowedMethods());
-
+//Rutas aprendiz Maira
+app.use(routerAprendiz.routes());
+app.use(routerAprendiz.allowedMethods());
 console.log("Servidor corriendo por el puerto 8000");
 await app.listen({ port: 8000 });

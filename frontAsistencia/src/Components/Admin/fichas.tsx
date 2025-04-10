@@ -13,6 +13,7 @@ import {
   DialogTitle,
   Grid,
   MenuItem,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -245,50 +246,74 @@ export default function AdminFichaPanel() {
 
   return (
     <>
-      <Box sx={{ backgroundColor: "green", py: 2 }}>
+      <Box sx={{ backgroundColor: "#2E7D32", py: 3 }}>
         <Typography
           variant="h5"
           align="center"
-          sx={{ color: "white", fontWeight: "bold" }}
+          sx={{ color: "white", fontWeight: "bold", letterSpacing: 1 }}
         >
           Gestión de Fichas - SENA
         </Typography>
       </Box>
 
       <Container sx={{ mt: 4 }}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" gutterBottom fontWeight="bold">
           Panel de Administración - Fichas
         </Typography>
 
         {loading && <CircularProgress />}
         {error && <Typography color="error">{error}</Typography>}
 
-        <Card sx={{ boxShadow: 5, mb: 4, p: 2 }}>
-          <Typography variant="h5" gutterBottom>
-            Fichas
-          </Typography>
+        <Card sx={{ boxShadow: 4, mb: 4, p: 3, borderRadius: 3 }}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            mb={2}
+          >
+            <Typography variant="h5" fontWeight="bold">
+              Lista de Fichas
+            </Typography>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => {
+                fetchProgramas();
+                fetchEstados();
+                setOpenForm(true);
+              }}
+            >
+              + Nueva Ficha
+            </Button>
+          </Stack>
 
-          <Grid container spacing={2}>
+          <Grid container spacing={3}>
             {fichas.map((ficha) => (
               <Grid item xs={12} sm={6} md={4} key={ficha.idficha}>
-                <Card variant="outlined">
+                <Card
+                  sx={{
+                    borderRadius: 2,
+                    boxShadow: 2,
+                    backgroundColor: "#f9f9f9",
+                  }}
+                >
                   <CardContent>
-                    <Typography variant="subtitle1">
+                    <Typography variant="subtitle1" fontWeight="bold">
                       Código: {ficha.codigo_ficha}
                     </Typography>
-                    <Typography variant="body2">
+                    <Typography variant="body2" color="text.secondary">
                       Programa: {ficha.nombre_programa}
                     </Typography>
-                    <Typography variant="body2">
+                    <Typography variant="body2" color="text.secondary">
                       Estado: {ficha.estado_ficha}
                     </Typography>
-                    <Typography variant="body2">
+                    <Typography variant="body2" color="text.secondary">
                       Inicio: {dayjs(ficha.fecha_inicio).format("YYYY-MM-DD")}
                     </Typography>
                   </CardContent>
-                  <CardActions>
+                  <CardActions sx={{ justifyContent: "flex-end", px: 2 }}>
                     <Button
-                      color="secondary"
+                      color="error"
                       onClick={() => handleDelete(ficha.idficha)}
                     >
                       Eliminar

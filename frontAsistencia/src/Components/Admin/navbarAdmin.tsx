@@ -42,6 +42,7 @@ const Navbar: React.FC = () => {
           { text: "Aprendices", route: "/admin/aprendices" },
           { text: "Instructor", route: "/admin/instructorAdmin" },
           { text: "Fichas", route: "/admin/fichaAdmin" },
+          { text: "asignarI", route: "/admin/asignarInstrucoresAficha" },
         ].map(({ text, route }) => (
           <ListItem key={text} disablePadding>
             <ListItemButton onClick={() => navigate(route)}>

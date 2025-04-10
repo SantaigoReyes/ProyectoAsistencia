@@ -138,84 +138,100 @@ export default function AdminPanel() {
       );
     }
   };
-
   return (
     <>
+      {/* Encabezado principal */}
       <Box
         sx={{
-          backgroundColor: "green",
-          py: 2,
-          position: "relative", // podés cambiarlo a fixed si querés que se mantenga al hacer scroll
+          background: "linear-gradient(to right, #0b6623, #1e9b44)", // verde institucional con degradado
+          py: 3,
+          position: "relative",
           top: 0,
           left: 0,
           width: "100%",
-          m: 0, // elimina márgenes
+          m: 0,
+          boxShadow: 3,
         }}
       >
         <Typography
-          variant="h5"
+          variant="h4"
           align="center"
-          sx={{ color: "white", fontWeight: "bold", m: 0 }}
+          sx={{ color: "white", fontWeight: "bold", letterSpacing: 1 }}
         >
           Gestión de Programas - SENA
         </Typography>
       </Box>
 
       {/* Contenedor principal */}
-      <Container sx={{ mt: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          Panel de Administración - Programas
+      <Container sx={{ mt: 5 }}>
+        <Typography variant="h5" gutterBottom sx={{ color: "#0b6623" }}>
+          Panel de Administración de Programas
         </Typography>
+
         {loading && <CircularProgress />}
         {error && <Typography color="error">{error}</Typography>}
 
-        {/* Sección de Programas */}
-        <Card sx={{ boxShadow: 5, mb: 4, p: 2 }}>
-          <Typography variant="h5" gutterBottom>
-            Programas
-          </Typography>
-          <Grid container spacing={2}>
-            {programas.length > 0 ? (
-              programas.map((programa) => (
-                <Grid item xs={12} sm={6} md={4} key={programa.idprograma}>
-                  <Card variant="outlined">
-                    <CardContent>
-                      <Typography variant="subtitle1">
-                        {programa.nombre_programa || programa.nombrePrograma}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        Código:{" "}
-                        {programa.codigo_programa || programa.codigoPrograma}
-                      </Typography>
-                    </CardContent>
-                    <CardActions>
-                      <Button
-                        color="secondary"
-                        onClick={() => handleDelete(programa.idprograma)}
-                      >
-                        Eliminar
-                      </Button>
-                      <Button
-                        color="primary"
-                        onClick={() => handleOpenEditPrograma(programa)}
-                      >
-                        Editar
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
-              ))
-            ) : (
-              <Typography color="textSecondary" sx={{ ml: 2 }}>
-                No hay programas disponibles.
-              </Typography>
-            )}
-          </Grid>
-          <CardActions>
+        {/* Sección de programas */}
+        <Card sx={{ boxShadow: 6, mb: 4, borderRadius: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom sx={{ color: "#1e9b44" }}>
+              Lista de Programas
+            </Typography>
+            <Grid container spacing={2}>
+              {programas.length > 0 ? (
+                programas.map((programa) => (
+                  <Grid item xs={12} sm={6} md={4} key={programa.idprograma}>
+                    <Card
+                      sx={{
+                        border: "1px solid #c8e6c9",
+                        borderRadius: 2,
+                        backgroundColor: "#f1f8e9",
+                      }}
+                    >
+                      <CardContent>
+                        <Typography
+                          variant="subtitle1"
+                          sx={{ fontWeight: "bold" }}
+                        >
+                          {programa.nombre_programa || programa.nombrePrograma}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                          Código:{" "}
+                          {programa.codigo_programa || programa.codigoPrograma}
+                        </Typography>
+                      </CardContent>
+                      <CardActions>
+                        <Button
+                          color="error"
+                          onClick={() => handleDelete(programa.idprograma)}
+                        >
+                          Eliminar
+                        </Button>
+                        <Button
+                          color="success"
+                          onClick={() => handleOpenEditPrograma(programa)}
+                        >
+                          Editar
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                ))
+              ) : (
+                <Typography color="textSecondary" sx={{ ml: 2 }}>
+                  No hay programas disponibles.
+                </Typography>
+              )}
+            </Grid>
+          </CardContent>
+          <CardActions sx={{ justifyContent: "flex-end", px: 2 }}>
             <Button
               variant="contained"
               onClick={() => setOpenPrograma(true)}
-              sx={{ ml: 2, mb: 2 }}
+              sx={{
+                backgroundColor: "#1e9b44",
+                "&:hover": { backgroundColor: "#158a39" },
+              }}
             >
               Agregar Programa
             </Button>
@@ -224,8 +240,10 @@ export default function AdminPanel() {
 
         {/* Diálogo para agregar Programa */}
         <Dialog open={openPrograma} onClose={() => setOpenPrograma(false)}>
-          <DialogTitle>Agregar Programa</DialogTitle>
-          <DialogContent>
+          <DialogTitle sx={{ backgroundColor: "#e8f5e9", color: "#0b6623" }}>
+            Agregar Programa
+          </DialogTitle>
+          <DialogContent sx={{ backgroundColor: "#f9fbe7" }}>
             <TextField
               label="Código del Programa"
               fullWidth
@@ -251,9 +269,9 @@ export default function AdminPanel() {
               }
             />
           </DialogContent>
-          <DialogActions>
+          <DialogActions sx={{ backgroundColor: "#f1f8e9" }}>
             <Button onClick={() => setOpenPrograma(false)}>Cancelar</Button>
-            <Button onClick={handleAddPrograma} color="primary">
+            <Button onClick={handleAddPrograma} color="success">
               Agregar
             </Button>
           </DialogActions>
@@ -264,8 +282,10 @@ export default function AdminPanel() {
           open={openEditPrograma}
           onClose={() => setOpenEditPrograma(false)}
         >
-          <DialogTitle>Editar Programa</DialogTitle>
-          <DialogContent>
+          <DialogTitle sx={{ backgroundColor: "#e8f5e9", color: "#0b6623" }}>
+            Editar Programa
+          </DialogTitle>
+          <DialogContent sx={{ backgroundColor: "#f9fbe7" }}>
             <TextField
               label="Código del Programa"
               fullWidth
@@ -299,9 +319,9 @@ export default function AdminPanel() {
               }
             />
           </DialogContent>
-          <DialogActions>
+          <DialogActions sx={{ backgroundColor: "#f1f8e9" }}>
             <Button onClick={() => setOpenEditPrograma(false)}>Cancelar</Button>
-            <Button onClick={handleUpdatePrograma} color="primary">
+            <Button onClick={handleUpdatePrograma} color="success">
               Actualizar
             </Button>
           </DialogActions>

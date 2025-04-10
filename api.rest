@@ -1,3 +1,7 @@
+GET  http://localhost:8000/instructoresAIF
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQ0MzAwOTc3fQ.VaihvDAap8TwiBYwvkz-1QJa-OYs10VM9S62yIqqoBk
+
+###
 POST http://localhost:8000/fichas
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQ0MTkyNzYzfQ.cXvw3UT_i5NpRjZm_EmVD8cRI03Y1Y8BUUulROqlF9E
@@ -56,10 +60,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tYnJlc
 ### Asignar un instructor a una ficha
 POST http://localhost:8000/asignarAIF
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQzNzk0NTc0fQ.9jgZnoo6-dcbPC74x2Gj80NQrwJk6hIDQvfZnFA-bWs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQ0MzAwOTc3fQ.VaihvDAap8TwiBYwvkz-1QJa-OYs10VM9S62yIqqoBk
 
 {
-  "idFuncionario": 1,
+  "idFuncionario": 4,
   "idFicha": 1
 }
 
@@ -126,21 +130,22 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlc
 
 ###
 GET http://localhost:8000/aprendiz
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQ0MDgxNzE0fQ.o_5sRF5gEPJMA1LwbmFtInlkox_Jr-fwtglQI3GfjNU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQ0MzAwNDM5fQ.v5-1riO6yajKJy1V74rvphQAUTk_ai4Rj0jIP5l3W8c
+
 ###
 PUT http://localhost:8000/aprendiz
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQ0MjIzNjU2fQ.3MDdnkssd4xR588b6xbArn2fVM7K5sjn60suQNrtc6I
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQ0Mjk0NzM1fQ.36IABvdBjL7_HPZWk9J-twimPdEY_vGKOhy4gX6ntuE
 
 {
-  "idAprendiz":"8",
+  "idAprendiz":"13",
   "documento_aprendiz": "123456789",
-  "nombre_aprendiz": "santiago",
-  "apellido_aprendiz": "Reyes",
+  "nombre_aprendiz": "Sirve",
+  "apellido_aprendiz": "EnBackend",
   "telefono_aprendiz": "3115336584",
-  "email_aprendiz": "santiagoju.reyes@example.com",
-  "password_aprendiz": "delunoaldiezf",
-  "ficha_idFicha": "1",
+  "email_aprendiz": "backend.reyes@example.com",
+  "password_aprendiz": "777777",
+  "ficha_idFicha": "2",
   "estado_aprendiz_idEstado_aprendiz": "1",
   "tipo_documento_idTipo_documento": "2"
 }

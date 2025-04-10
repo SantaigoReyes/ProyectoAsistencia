@@ -1,7 +1,6 @@
 // App.tsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./Login";
-import Home from "./pages/home";
+import Login from "./pages/Login";
 import AdminPanel from "./Components/Admin/admin";
 import ProtectedRoute from "./Protector/ProtectedRoute";
 import React from "react";
@@ -12,6 +11,11 @@ import HistorialAsistencias from "./Components/instructor/historialAsistencia";
 import AdminInstructorPanel from "./Components/Admin/instructor";
 import AdminFichaPanel from "./Components/Admin/fichas";
 import AprendicesPanel from "./Components/Admin/aprendiz";
+import ResetPassword from "./pages/resetPassword";
+import HistorialAsistencia from "./Components/aprendiz/panelAprendiz";
+import AsistenciaForm from "./Components/instructor/asistenciaAprendiz";
+import AsignarInstructor from "./Components/Admin/instructor";
+import AsignarInstructorFicha from "./Components/Admin/asignarInstructorAFicha";
 
 const App: React.FC = () => {
   return (
@@ -19,6 +23,7 @@ const App: React.FC = () => {
       <Routes>
         {/* Ruta pública para el Login */}
         <Route path="/" element={<Login />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Ruta protegida general */}
         <Route
@@ -32,26 +37,24 @@ const App: React.FC = () => {
               ]}
             />
           }
-        >
-          <Route path="/home" element={<Home />} />
-        </Route>
+        ></Route>
 
         {/* Aprendiz */}
         <Route element={<ProtectedRoute allowedRoles={["aprendiz"]} />}>
-          <Route path="/aprendiz" element={<AdminPanel />} />
+          <Route path="/aprendiz" element={<HistorialAsistencia />} />
         </Route>
 
         {/* Instructor */}
         <Route element={<ProtectedRoute allowedRoles={["instructor"]} />}>
           <Route path="/instructor" element={<NavbarInstructor />}>
             <Route path="panel-instructor" element={<PanelInstructor />} />
+            <Route path="asistencia" element={<AsistenciaForm />} />
             <Route
               path="historialAsistencias"
               element={<HistorialAsistencias />}
             />
           </Route>
         </Route>
-
         {/* Administrador */}
         <Route element={<ProtectedRoute allowedRoles={["administrador"]} />}>
           <Route path="/admin" element={<NavbarAdmin />}>
@@ -59,6 +62,10 @@ const App: React.FC = () => {
             <Route path="aprendices" element={<AprendicesPanel />} />
             <Route path="instructorAdmin" element={<AdminInstructorPanel />} />
             <Route path="fichaAdmin" element={<AdminFichaPanel />} />
+            <Route
+              path="asignarInstrucoresAficha"
+              element={<AsignarInstructorFicha />}
+            />
           </Route>
         </Route>
       </Routes>

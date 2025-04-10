@@ -72,12 +72,12 @@ export default function AdminInstructorPanel() {
     const token = localStorage.getItem("token");
     const formData = new FormData();
 
-    // Añadir todos los campos al formData
+    // ✅ Añadir todos los campos al formData
     Object.entries(formInstructor).forEach(([key, val]) => {
       if (val == null || val === "") return;
 
       if (key === "url_imgfuncionario" && val instanceof File) {
-        formData.append("imagen", val); // ✅ debe llamarse "imagen" para que el backend lo reconozca
+        formData.append("imagen", val); // 👈 nombre correcto para el backend
       } else {
         formData.append(key, val.toString());
       }
@@ -87,7 +87,6 @@ export default function AdminInstructorPanel() {
       await axios.post("http://localhost:8000/crear-instructor", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          // ✅ No pongas "Content-Type", Axios lo manejará por ti
         },
       });
 
@@ -176,287 +175,296 @@ export default function AdminInstructorPanel() {
 
   return (
     <>
-      {/* Barra verde superior sin margen */}
+      {/* Barra verde superior */}
       <Box
         sx={{
-          backgroundColor: "green",
+          backgroundColor: "#007A33", // Verde SENA
           py: 2,
           width: "100%",
           m: 0,
+          textAlign: "center",
         }}
       >
         <Typography
           variant="h5"
-          align="center"
-          sx={{ color: "white", fontWeight: "bold", m: 0 }}
+          sx={{ color: "white", fontWeight: "bold", letterSpacing: 1 }}
         >
           Gestión de Instructores - SENA
         </Typography>
       </Box>
 
-      {/* Contenedor sin gutters ni margen */}
-      <Container disableGutters sx={{ p: 0, m: 0 }}>
-        <Box sx={{ mt: 4, px: 2 }}>
-          <Typography variant="h4" gutterBottom>
-            Panel de Administración - Instructores
-          </Typography>
-          {loading && <CircularProgress />}
-          {error && <Typography color="error">{error}</Typography>}
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Typography variant="h4" gutterBottom fontWeight="bold">
+          Panel de Administración - Instructores
+        </Typography>
 
-          <Card sx={{ boxShadow: 5, mb: 4, p: 2 }}>
-            <Typography variant="h5" gutterBottom>
+        {loading && <CircularProgress />}
+        {error && <Typography color="error">{error}</Typography>}
+
+        <Card sx={{ boxShadow: 4, borderRadius: 3, p: 3, mb: 4 }}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="h5" fontWeight="bold">
               Instructores
             </Typography>
-            <Grid container spacing={2}>
-              {instructores.length > 0 ? (
-                instructores.map((inst) => (
-                  <Grid item xs={12} sm={6} md={4} key={inst.idfuncionario}>
-                    <Card
-                      variant="outlined"
-                      sx={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        transition: "transform 0.2s, box-shadow 0.2s",
-                        "&:hover": {
-                          transform: "translateY(-4px)",
-                          boxShadow: 6,
-                        },
-                      }}
-                    >
-                      {inst.url_imgfuncionario ? (
-                        <Box
-                          component="img"
-                          src={encodeURI(
-                            `http://localhost:8000${inst.url_imgfuncionario}`
-                          )}
-                          alt="Instructor"
-                          sx={{
-                            height: 220,
-                            width: "100%",
-                            objectFit: "cover",
-                            borderTopLeftRadius: 4,
-                            borderTopRightRadius: 4,
-                          }}
-                        />
-                      ) : (
-                        <Box
-                          sx={{
-                            height: 220,
-                            width: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            bgcolor: "#f0f0f0",
-                          }}
-                        >
-                          <Typography color="error" variant="body2">
-                            Imagen no disponible
+            <Button
+              variant="contained"
+              onClick={() => setOpenForm(true)}
+              sx={{ borderRadius: 2 }}
+            >
+              Agregar Instructor
+            </Button>
+          </Box>
+
+          <Grid container spacing={3} sx={{ mt: 2 }}>
+            {instructores.length > 0 ? (
+              instructores.map((inst) => (
+                <Grid item xs={12} sm={6} md={4} key={inst.idfuncionario}>
+                  <Card
+                    sx={{
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      borderRadius: 3,
+                      transition: "0.3s",
+                      "&:hover": {
+                        transform: "translateY(-5px)",
+                        boxShadow: 6,
+                      },
+                    }}
+                  >
+                    {inst.url_imgfuncionario ? (
+                      <Box
+                        component="img"
+                        src={`http://localhost:8000${inst.url_imgfuncionario}`}
+                        alt="Instructor"
+                        sx={{
+                          height: 200,
+                          width: "100%",
+                          objectFit: "cover",
+                          borderTopLeftRadius: 12,
+                          borderTopRightRadius: 12,
+                        }}
+                      />
+                    ) : (
+                      <Box
+                        sx={{
+                          height: 200,
+                          width: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          bgcolor: "#f0f0f0",
+                          borderTopLeftRadius: 12,
+                          borderTopRightRadius: 12,
+                        }}
+                      >
+                        <Typography color="error" variant="body2">
+                          Imagen no disponible
+                        </Typography>
+                      </Box>
+                    )}
+
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Typography fontWeight="bold">
+                        {inst.nombres && inst.apellidos ? (
+                          `${inst.nombres} ${inst.apellidos}`
+                        ) : (
+                          <Typography component="span" color="error">
+                            Actualiza
                           </Typography>
-                        </Box>
-                      )}
+                        )}
+                      </Typography>
+                      <Typography variant="body2">
+                        Documento:{" "}
+                        {inst.documento || (
+                          <Typography component="span" color="error">
+                            Actualiza
+                          </Typography>
+                        )}
+                      </Typography>
+                      <Typography variant="body2">
+                        Email:{" "}
+                        {inst.email || (
+                          <Typography component="span" color="error">
+                            Actualiza
+                          </Typography>
+                        )}
+                      </Typography>
+                      <Typography variant="body2">
+                        Tel:{" "}
+                        {inst.telefono || (
+                          <Typography component="span" color="error">
+                            Actualiza
+                          </Typography>
+                        )}
+                      </Typography>
+                    </CardContent>
 
-                      <CardContent sx={{ flexGrow: 1 }}>
-                        <Typography variant="subtitle1">
-                          {inst.nombres && inst.apellidos ? (
-                            `${inst.nombres} ${inst.apellidos}`
-                          ) : (
-                            <Typography component="span" color="error">
-                              Actualiza
-                            </Typography>
-                          )}
-                        </Typography>
+                    <CardActions>
+                      <Button
+                        size="small"
+                        color="error"
+                        onClick={() => handleDelete(inst.idfuncionario)}
+                      >
+                        Eliminar
+                      </Button>
+                      <Button
+                        size="small"
+                        color="primary"
+                        onClick={() => openEditDialog(inst)}
+                      >
+                        Editar
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))
+            ) : (
+              <Typography color="textSecondary" sx={{ ml: 2 }}>
+                No hay instructores disponibles.
+              </Typography>
+            )}
+          </Grid>
+        </Card>
 
-                        <Typography variant="body2">
-                          Documento:{" "}
-                          {inst.documento ? (
-                            inst.documento
-                          ) : (
-                            <Typography component="span" color="error">
-                              Actualiza
-                            </Typography>
-                          )}
-                        </Typography>
-
-                        <Typography variant="body2">
-                          Email:{" "}
-                          {inst.email ? (
-                            inst.email
-                          ) : (
-                            <Typography component="span" color="error">
-                              Actualiza
-                            </Typography>
-                          )}
-                        </Typography>
-
-                        <Typography variant="body2">
-                          Tel:{" "}
-                          {inst.telefono ? (
-                            inst.telefono
-                          ) : (
-                            <Typography component="span" color="error">
-                              Actualiza
-                            </Typography>
-                          )}
-                        </Typography>
-                      </CardContent>
-
-                      <CardActions>
-                        <Button
-                          color="secondary"
-                          onClick={() => handleDelete(inst.idfuncionario)}
-                        >
-                          Eliminar
-                        </Button>
-                        <Button
-                          color="primary"
-                          onClick={() => openEditDialog(inst)}
-                        >
-                          Editar
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))
-              ) : (
-                <Typography color="textSecondary" sx={{ ml: 2 }}>
-                  No hay instructores disponibles.
-                </Typography>
-              )}
-            </Grid>
-
-            <CardActions>
-              <Button
-                variant="contained"
-                onClick={() => setOpenForm(true)}
-                sx={{ ml: 2, mb: 2 }}
-              >
-                Agregar Instructor
-              </Button>
-            </CardActions>
-          </Card>
-
-          <Dialog open={openForm} onClose={() => setOpenForm(false)}>
-            <DialogTitle>Agregar Instructor</DialogTitle>
-            <DialogContent>
-              {/* Campos comunes */}
-              {[
-                "documento",
-                "nombres",
-                "apellidos",
-                "email",
-                "telefono",
-                "password",
-              ].map((field) => (
-                <TextField
-                  key={field}
-                  label={field}
-                  name={field}
-                  fullWidth
-                  margin="dense"
-                  value={formInstructor[field]}
-                  onChange={handleChange}
-                />
-              ))}
-
-              {/* Campo corregido: Tipo de Documento */}
+        {/* Diálogo Agregar */}
+        <Dialog open={openForm} onClose={() => setOpenForm(false)} fullWidth>
+          <DialogTitle>Agregar Instructor</DialogTitle>
+          <DialogContent>
+            {[
+              "documento",
+              "nombres",
+              "apellidos",
+              "email",
+              "telefono",
+              "password",
+            ].map((field) => (
               <TextField
-                select
-                label="Tipo de Documento"
-                name="tipo_documento_idtipo_documento"
+                key={field}
+                label={field}
+                name={field}
                 fullWidth
                 margin="dense"
-                value={formInstructor.tipo_documento_idtipo_documento}
+                value={formInstructor[field]}
                 onChange={handleChange}
-                required
-                error={!formInstructor.tipo_documento_idtipo_documento}
-                helperText={
-                  !formInstructor.tipo_documento_idtipo_documento
-                    ? "Selecciona un tipo de documento"
-                    : ""
-                }
-              >
-                <MenuItem value="">Selecciona una opción</MenuItem>
-                <MenuItem value="1">Cédula</MenuItem>
-                <MenuItem value="2">Tarjeta de Identidad</MenuItem>
-                <MenuItem value="3">Pasaporte</MenuItem>
-              </TextField>
+              />
+            ))}
 
-              {/* Carga de imagen */}
-              <input type="file" name="imagen" onChange={handleFileChange} />
-            </DialogContent>
+            <TextField
+              select
+              label="Tipo de Documento"
+              name="tipo_documento_idtipo_documento"
+              fullWidth
+              margin="dense"
+              value={formInstructor.tipo_documento_idtipo_documento}
+              onChange={handleChange}
+              required
+              error={!formInstructor.tipo_documento_idtipo_documento}
+              helperText={
+                !formInstructor.tipo_documento_idtipo_documento
+                  ? "Selecciona un tipo de documento"
+                  : ""
+              }
+            >
+              <MenuItem value="">Selecciona una opción</MenuItem>
+              <MenuItem value="1">Cédula</MenuItem>
+              <MenuItem value="2">Tarjeta de Identidad</MenuItem>
+              <MenuItem value="3">Pasaporte</MenuItem>
+            </TextField>
 
-            <DialogActions>
-              <Button onClick={() => setOpenForm(false)}>Cancelar</Button>
-              <Button
-                onClick={handleAddInstructor}
-                color="primary"
-                disabled={!formInstructor.tipo_documento_idtipo_documento}
-              >
-                Agregar
-              </Button>
-            </DialogActions>
-          </Dialog>
+            <Button
+              variant="outlined"
+              component="label"
+              fullWidth
+              sx={{ mt: 2 }}
+            >
+              Subir imagen
+              <input type="file" hidden onChange={handleFileChange} />
+            </Button>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenForm(false)}>Cancelar</Button>
+            <Button
+              onClick={handleAddInstructor}
+              color="primary"
+              variant="contained"
+              disabled={!formInstructor.tipo_documento_idtipo_documento}
+            >
+              Agregar
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-          {/* Diálogo para editar */}
-          <Dialog open={openEdit} onClose={() => setOpenEdit(false)}>
-            <DialogTitle>Editar Instructor</DialogTitle>
-            <DialogContent>
-              {/* Campos comunes */}
-              {[
-                "documento",
-                "nombres",
-                "apellidos",
-                "email",
-                "telefono",
-                "password",
-              ].map((field) => (
-                <TextField
-                  key={field}
-                  label={field}
-                  name={field}
-                  fullWidth
-                  margin="dense"
-                  value={formInstructor[field]}
-                  onChange={handleChange}
-                />
-              ))}
-
-              {/* Campo corregido: Tipo de Documento */}
+        {/* Diálogo Editar */}
+        <Dialog open={openEdit} onClose={() => setOpenEdit(false)} fullWidth>
+          <DialogTitle>Editar Instructor</DialogTitle>
+          <DialogContent>
+            {[
+              "documento",
+              "nombres",
+              "apellidos",
+              "email",
+              "telefono",
+              "password",
+            ].map((field) => (
               <TextField
-                select
-                label="Tipo de Documento"
-                name="tipo_documento_idtipo_documento"
+                key={field}
+                label={field}
+                name={field}
                 fullWidth
                 margin="dense"
-                value={formInstructor.tipo_documento_idtipo_documento}
+                value={formInstructor[field]}
                 onChange={handleChange}
-                required
-                error={!formInstructor.tipo_documento_idtipo_documento}
-                helperText={
-                  !formInstructor.tipo_documento_idtipo_documento
-                    ? "Selecciona un tipo de documento"
-                    : ""
-                }
-              >
-                <MenuItem value="">Selecciona una opción</MenuItem>
-                <MenuItem value="1">Cédula</MenuItem>
-                <MenuItem value="2">Tarjeta de Identidad</MenuItem>
-                <MenuItem value="3">Pasaporte</MenuItem>
-              </TextField>
+              />
+            ))}
 
-              {/* Carga de imagen */}
-              <input type="file" name="imagen" onChange={handleFileChange} />
-            </DialogContent>
+            <TextField
+              select
+              label="Tipo de Documento"
+              name="tipo_documento_idtipo_documento"
+              fullWidth
+              margin="dense"
+              value={formInstructor.tipo_documento_idtipo_documento}
+              onChange={handleChange}
+              required
+              error={!formInstructor.tipo_documento_idtipo_documento}
+              helperText={
+                !formInstructor.tipo_documento_idtipo_documento
+                  ? "Selecciona un tipo de documento"
+                  : ""
+              }
+            >
+              <MenuItem value="">Selecciona una opción</MenuItem>
+              <MenuItem value="1">Cédula</MenuItem>
+              <MenuItem value="2">Tarjeta de Identidad</MenuItem>
+              <MenuItem value="3">Pasaporte</MenuItem>
+            </TextField>
 
-            <DialogActions>
-              <Button onClick={() => setOpenEdit(false)}>Cancelar</Button>
-              <Button onClick={handleUpdateInstructor} color="primary">
-                Actualizar
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </Box>
+            <Button
+              variant="outlined"
+              component="label"
+              fullWidth
+              sx={{ mt: 2 }}
+            >
+              Cambiar imagen
+              <input type="file" hidden onChange={handleFileChange} />
+            </Button>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenEdit(false)}>Cancelar</Button>
+            <Button
+              onClick={handleUpdateInstructor}
+              variant="contained"
+              color="primary"
+            >
+              Actualizar
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </>
   );

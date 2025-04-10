@@ -11,13 +11,21 @@ export const getFichasActiva = async () => {
 };
 //Ver instructores
 export const getInstructores = async () => {
-  return await Conexion.query(`SELECT f.idfuncionario, f.nombres, f.documento 
-    FROM funcionario AS f
-    INNER JOIN funcionario_has_tipo_funcionario AS ftf 
-       ON f.idfuncionario = ftf.funcionario_idfuncionario
-    INNER JOIN tipo_funcionario AS tf 
-       ON ftf.funcionario_idfuncionario = tf.idtipo_funcionario
-    WHERE tf.tipo_funcionario = 'Instructor'`);
+  return await Conexion.query(`SELECT 
+  f.idfuncionario,
+  f.documento,
+  f.nombres,
+  f.apellidos,
+  f.email,
+  f.telefono,
+  tf.idtipo_funcionario,
+  tf.tipo_funcionario
+FROM funcionario f
+INNER JOIN funcionario_has_tipo_funcionario fhtf 
+  ON f.idfuncionario = fhtf.funcionario_idfuncionario
+INNER JOIN tipo_funcionario tf 
+  ON fhtf.tipo_funcionario_idtipo_funcionario = tf.idtipo_funcionario
+  WHERE idtipo_funcionario =2;`);
 };
 
 export const asignarInstructoresAFicha = async (asignarAIF: datosAIF) => {

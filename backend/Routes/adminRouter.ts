@@ -1,3 +1,4 @@
+// deno-lint-ignore-file
 import {
   getProgram,
   postPrograma,
@@ -28,6 +29,11 @@ import {
 } from "../Controller/adminCrudMaiController.ts";
 import { uploadImage } from "../Middlewares/imageUpload.ts";
 import { getEstadoAprendiz, getTipoDocumento } from "../Models/adminCrudMai.ts";
+import {
+  postVerificarCorreo,
+  postResetpassword,
+} from "../Controller/correoController.ts";
+import { decodeToken } from "../Helpers/jwt.ts";
 
 const routerPrograma = new Router();
 
@@ -96,7 +102,7 @@ routerPrograma.get(
 routerPrograma.put(
   "/aprendiz",
   authMiddleware,
-  roleMiddleware(["Administrador"]),
+  roleMiddleware(["Administrador", "Instructor"]),
   putAprendiz
 );
 routerPrograma.delete(
@@ -168,4 +174,39 @@ routerPrograma.get(
 routerPrograma.get("/tipodocumento", authMiddleware, getTipoDocumento);
 routerPrograma.get("/estadoaprendiz", authMiddleware, getEstadoAprendiz);
 
+//Rutas de correo
+routerPrograma.post("/postVerificarCorreo", postVerificarCorreo);
+
+//recuperar contraseña paso#2
+routerPrograma.post("/postResetpassword", postResetpassword);
+
+routerPrograma.get("/employees/reset-password", async (ctx: any) => {
+  try {
+    const token = ctx.request.url.searchParams.get("token");
+
+    if (!token) {
+      ctx.response.status = 400;
+      ctx.response.body = {
+        success: false,
+        message: "Token no proporcionado.",
+      };
+      return;
+    }
+
+    const tokenData = await decodeToken(token);
+
+    ctx.response.status = 200;
+    ctx.response.body = {
+      success: true,
+      email: tokenData.email,
+      token: token,
+    };
+  } catch (error) {
+    ctx.response.status = 400;
+    ctx.response.body = {
+      success: false,
+      message: "Token inválido o expirado.",
+    };
+  }
+});
 export { routerPrograma };
