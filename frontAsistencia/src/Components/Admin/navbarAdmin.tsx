@@ -38,10 +38,10 @@ const Navbar: React.FC = () => {
       </Toolbar>
       <List>
         {[
-          { text: "Programa", route: "/crudAdmin" },
-          { text: "Aprendices", route: "/aprendices" },
-          { text: "Instructor", route: "/instructorAdmin" },
-          { text: "Fichas", route: "/fichaAdmin" },
+          { text: "Programa", route: "/admin/crudAdmin" },
+          { text: "Aprendices", route: "/admin/aprendices" },
+          { text: "Instructor", route: "/admin/instructorAdmin" },
+          { text: "Fichas", route: "/admin/fichaAdmin" },
         ].map(({ text, route }) => (
           <ListItem key={text} disablePadding>
             <ListItemButton onClick={() => navigate(route)}>

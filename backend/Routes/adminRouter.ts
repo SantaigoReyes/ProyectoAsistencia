@@ -27,6 +27,7 @@ import {
   putInstructor,
 } from "../Controller/adminCrudMaiController.ts";
 import { uploadImage } from "../Middlewares/imageUpload.ts";
+import { getEstadoAprendiz, getTipoDocumento } from "../Models/adminCrudMai.ts";
 
 const routerPrograma = new Router();
 
@@ -162,4 +163,9 @@ routerPrograma.get(
   roleMiddleware(["Administrador"]),
   getEstadoFicha
 );
+
+//TipoDocumento
+routerPrograma.get("/tipodocumento", authMiddleware, getTipoDocumento);
+routerPrograma.get("/estadoaprendiz", authMiddleware, getEstadoAprendiz);
+
 export { routerPrograma };

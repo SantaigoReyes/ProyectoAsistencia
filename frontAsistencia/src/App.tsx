@@ -1,3 +1,4 @@
+// App.tsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./Login";
 import Home from "./pages/home";
@@ -5,13 +6,13 @@ import AdminPanel from "./Components/Admin/admin";
 import ProtectedRoute from "./Protector/ProtectedRoute";
 import React from "react";
 import NavbarAdmin from "./Components/Admin/navbarAdmin";
-import Navbar from "./pages/Dashboard";
-import AprendizPanel from "./Components/Admin/aprendiz";
 import PanelInstructor from "./Components/instructor/listaAprendicesACargo";
 import NavbarInstructor from "./Components/instructor/navbarInstructor";
 import HistorialAsistencias from "./Components/instructor/historialAsistencia";
 import AdminInstructorPanel from "./Components/Admin/instructor";
 import AdminFichaPanel from "./Components/Admin/fichas";
+import AprendicesPanel from "./Components/Admin/aprendiz";
+
 const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -42,21 +43,23 @@ const App: React.FC = () => {
 
         {/* Instructor */}
         <Route element={<ProtectedRoute allowedRoles={["instructor"]} />}>
-          <Route path="/instructor" element={<NavbarInstructor />} />
-          <Route path="/panel-instructor" element={<PanelInstructor />} />
-          <Route
-            path="/historialAsistencias"
-            element={<HistorialAsistencias />}
-          />
+          <Route path="/instructor" element={<NavbarInstructor />}>
+            <Route path="panel-instructor" element={<PanelInstructor />} />
+            <Route
+              path="historialAsistencias"
+              element={<HistorialAsistencias />}
+            />
+          </Route>
         </Route>
 
         {/* Administrador */}
         <Route element={<ProtectedRoute allowedRoles={["administrador"]} />}>
-          <Route path="/admin" element={<NavbarAdmin />} />
-          <Route path="/crudAdmin" element={<AdminPanel />} />
-          <Route path="/aprendices" element={<AprendizPanel />} />
-          <Route path="/instructorAdmin" element={<AdminInstructorPanel />} />
-          <Route path="/fichaAdmin" element={<AdminFichaPanel />} />
+          <Route path="/admin" element={<NavbarAdmin />}>
+            <Route path="crudAdmin" element={<AdminPanel />} />
+            <Route path="aprendices" element={<AprendicesPanel />} />
+            <Route path="instructorAdmin" element={<AdminInstructorPanel />} />
+            <Route path="fichaAdmin" element={<AdminFichaPanel />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

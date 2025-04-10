@@ -1,33 +1,51 @@
 import { useEffect, useState } from "react";
 import {
-  Container,
-  Typography,
   Button,
+  TextField,
   Card,
   CardContent,
-  CardActions,
+  Typography,
   Grid,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  DialogActions,
-  CircularProgress,
-  Box,
+  MenuItem,
 } from "@mui/material";
-import axios from "axios";
 import React from "react";
 
-export default function AprendizPanel() {
-  const [aprendiz, setAprendiz] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+const apiUrl = "http://localhost:8000/aprendiz"; // Endpoint principal para aprendiz
 
-  const [openAprendices, setOpenAprendices] = useState(false);
-  const [openEditAprendiz, setOpenEditAprendiz] = useState(false);
-  const [editingAprendiz, setEditingAprendiz] = useState<any>(null);
+interface Aprendiz {
+  idaprendiz?: string;
+  documento_aprendiz: string;
+  nombre_aprendiz: string;
+  apellido_aprendiz: string;
+  telefono_aprendiz: string;
+  email_aprendiz: string;
+  password_aprendiz: string;
+  ficha_idFicha: string;
+  estado_aprendiz_idEstado_aprendiz: string;
+  tipo_documento_idTipo_documento: string;
+}
 
-  const [formAprendices, setFormAprendices] = useState({
+interface TipoDocumento {
+  idtipo_documento: number;
+  tipo_documento: string;
+  abreviatura_tipo_documento?: string;
+}
+
+interface EstadoAprendiz {
+  idestado_aprendiz: number;
+  estado_aprendiz: string;
+}
+
+interface Ficha {
+  idficha: number;
+  codigo_ficha: string;
+}
+
+export default function Aprendices() {
+  // Lista de aprendices
+  const [aprendices, setAprendices] = useState<Aprendiz[]>([]);
+  // Datos del formulario
+  const [formData, setFormData] = useState<Aprendiz>({
     documento_aprendiz: "",
     nombre_aprendiz: "",
     apellido_aprendiz: "",
@@ -38,250 +56,405 @@ export default function AprendizPanel() {
     estado_aprendiz_idEstado_aprendiz: "",
     tipo_documento_idTipo_documento: "",
   });
+  // Para saber si se está editando y guardar el id a actualizar
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const fetchData = async () => {
+  // Opciones para los selects
+  const [tiposDocumento, setTiposDocumento] = useState<TipoDocumento[]>([]);
+  const [estadosAprendiz, setEstadosAprendiz] = useState<EstadoAprendiz[]>([]);
+  const [fichas, setFichas] = useState<Ficha[]>([]);
+
+  // 🔃 Cargar la lista de aprendices
+  const fetchAprendices = async () => {
+    const res = await fetch(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const data = await res.json();
+    setAprendices(data.aprendiz);
+  };
+
+  // Cargar datos para los combobox de tipo documento, estado y ficha
+  const fetchSelectData = async () => {
+    const token = localStorage.getItem("token");
     try {
-      setLoading(true);
-      setError(null);
-      const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:8000/aprendiz", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      console.log("📌 Respuesta de programas:", response.data);
+      const [tiposRes, estadosRes, fichasRes] = await Promise.all([
+        fetch("http://localhost:8000/tipodocumento", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch("http://localhost:8000/estadoaprendiz", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch("http://localhost:8000/fichas", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
 
-      setAprendiz(response.data.aprendiz || response.data || []);
+      const tiposData = await tiposRes.json();
+      const estadosData = await estadosRes.json();
+      const fichasData = await fichasRes.json();
+
+      setTiposDocumento(tiposData.data);
+      setEstadosAprendiz(estadosData.data);
+      setFichas(fichasData.data);
+      console.log("Tipos:", tiposDocumento);
     } catch (error) {
-      setError("Error al cargar aprendices.");
-      console.error(error);
-    } finally {
-      setLoading(false);
+      console.error("Error al cargar datos para selects:", error);
     }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchAprendices();
+    fetchSelectData();
+    console.log("Tipos:", tiposDocumento);
+    console.log("Estados:", estadosAprendiz);
+    console.log("Fichas:", fichas);
   }, []);
 
-  const handleDelete = async (id: number) => {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:8000/aprendiz/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      fetchData();
-    } catch (error) {
-      console.error("Error al eliminar", error);
-    }
+  // Manejo de cambios en el formulario
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleAddAprendiz = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.post("http://localhost:8000/aprendiz", formAprendices, {
+  // Agregar o actualizar aprendiz según el modo
+  const handleSubmit = async () => {
+    const token = localStorage.getItem("token");
+    if (isEditing && editingId) {
+      // Actualizar aprendiz: se envía el id en el payload como idAprendiz
+      const res = await fetch(apiUrl, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({ ...formData, idaprendiz: editingId }),
       });
-
-      setOpenAprendices(false);
-      setFormAprendices({
-        documento_aprendiz: "",
-        nombre_aprendiz: "",
-        apellido_aprendiz: "",
-        telefono_aprendiz: "",
-        email_aprendiz: "",
-        password_aprendiz: "",
-        ficha_idFicha: "",
-        estado_aprendiz_idEstado_aprendiz: "",
-        tipo_documento_idTipo_documento: "",
+      const result = await res.json();
+      if (result.success) {
+        alert("Aprendiz actualizado correctamente");
+        setIsEditing(false);
+        setEditingId(null);
+        resetForm();
+        fetchAprendices();
+      } else {
+        alert("Error al actualizar aprendiz");
+      }
+    } else {
+      // Agregar nuevo aprendiz
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
       });
-
-      fetchData();
-    } catch (error) {
-      console.error("Error al agregar aprendiz", error);
+      const result = await res.json();
+      if (result.success) {
+        alert("Aprendiz agregado correctamente");
+        resetForm();
+        fetchAprendices();
+      } else {
+        alert("Error al agregar aprendiz");
+      }
     }
   };
 
-  const handleOpenEditAprendiz = (aprendiz: any) => {
-    setEditingAprendiz(aprendiz);
-    setOpenEditAprendiz(true);
+  // Reinicia el formulario
+  const resetForm = () => {
+    setFormData({
+      documento_aprendiz: "",
+      nombre_aprendiz: "",
+      apellido_aprendiz: "",
+      telefono_aprendiz: "",
+      email_aprendiz: "",
+      password_aprendiz: "",
+      ficha_idFicha: "",
+      estado_aprendiz_idEstado_aprendiz: "",
+      tipo_documento_idTipo_documento: "",
+    });
   };
 
-  const handleUpdateAprendiz = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:8000/aprendiz/${editingAprendiz.idAprendiz}`,
-        editingAprendiz,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  // Eliminar aprendiz
+  const deleteAprendiz = async (id: string) => {
+    if (!confirm("¿Estás seguro de eliminar este aprendiz?")) return;
+    await fetch(`${apiUrl}/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    fetchAprendices();
+  };
 
-      setOpenEditAprendiz(false);
-      setEditingAprendiz(null);
-      fetchData();
-    } catch (error) {
-      console.error("Error al actualizar aprendiz", error);
-    }
+  // Cargar datos del aprendiz en el formulario para editar
+  const editAprendiz = (aprendiz: Aprendiz) => {
+    setFormData({
+      documento_aprendiz: aprendiz.documento_aprendiz,
+      nombre_aprendiz: aprendiz.nombre_aprendiz,
+      apellido_aprendiz: aprendiz.apellido_aprendiz,
+      telefono_aprendiz: aprendiz.telefono_aprendiz,
+      email_aprendiz: aprendiz.email_aprendiz,
+      password_aprendiz: aprendiz.password_aprendiz,
+      ficha_idFicha: aprendiz.ficha_idFicha,
+      estado_aprendiz_idEstado_aprendiz:
+        aprendiz.estado_aprendiz_idEstado_aprendiz,
+      tipo_documento_idTipo_documento: aprendiz.tipo_documento_idTipo_documento,
+    });
+    setEditingId(aprendiz.idaprendiz || null);
+    setIsEditing(true);
   };
 
   return (
-    <>
-      <Box
-        sx={{
-          backgroundColor: "green",
-          py: 2,
-          position: "relative", // podés cambiarlo a fixed si querés que se mantenga al hacer scroll
-          top: 0,
-          left: 0,
-          width: "100%",
-          m: 0, // elimina márgenes
-        }}
-      >
-        <Typography
-          variant="h5"
-          align="center"
-          sx={{ color: "white", fontWeight: "bold", m: 0 }}
-        >
-          Gestión de Aprendices - SENA
-        </Typography>
-      </Box>
-
-      <Container sx={{ mt: 4 }}>
+    <Card sx={{ p: 2, maxWidth: 1000, margin: "auto", mt: 4 }}>
+      <CardContent>
         <Typography variant="h5" gutterBottom>
-          Panel de administrador para Aprendiz
+          {isEditing ? "Editar Aprendiz" : "Registro de Aprendices"}
         </Typography>
-        {loading && <CircularProgress />}
-        {error && <Typography color="red">{error}</Typography>}
-        <Card sx={{ boxShadow: 5, mb: 4, p: 2 }}>
-          <Typography variant="h5" gutterBottom>
-            Aprendiz
-          </Typography>
-          <Grid container spacing={2}>
-            {aprendiz.length > 0 ? (
-              aprendiz.map((apr) => (
-                <Grid item xs={12} sm={6} md={4} key={apr.idaprendiz}>
-                  <Card variant="outlined">
-                    <CardContent>
-                      <Typography variant="body2" color="textSecondary">
-                        Nombre: {apr.nombres_aprendiz} {apr.apellidos_aprendiz}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        Email: {apr.email_aprendiz}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        Teléfono: {apr.telefono_aprendiz}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        Documento: {apr.documento_aprendiz}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        Tipo Documento: {apr.tipo_documento_idTipo_documento}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        password: {apr.password_aprendiz}
-                      </Typography>
-                    </CardContent>
-                    <CardActions>
-                      <Button
-                        color="secondary"
-                        onClick={() => handleDelete(apr.idaprendiz)}
-                      >
-                        Eliminar
-                      </Button>
-                      <Button
-                        color="primary"
-                        onClick={() => handleOpenEditAprendiz(apr)}
-                      >
-                        Editar
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
-              ))
-            ) : (
-              <Typography color="textSecondary" sx={{ ml: 2 }}>
-                No hay Aprendices disponibles.
-              </Typography>
-            )}
+
+        {/* Formulario */}
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Documento Aprendiz"
+              name="documento_aprendiz"
+              value={formData.documento_aprendiz}
+              onChange={handleChange}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Nombre Aprendiz"
+              name="nombre_aprendiz"
+              value={formData.nombre_aprendiz}
+              onChange={handleChange}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Apellido Aprendiz"
+              name="apellido_aprendiz"
+              value={formData.apellido_aprendiz}
+              onChange={handleChange}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Teléfono Aprendiz"
+              name="telefono_aprendiz"
+              value={formData.telefono_aprendiz}
+              onChange={handleChange}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Email Aprendiz"
+              name="email_aprendiz"
+              value={formData.email_aprendiz}
+              onChange={handleChange}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Password Aprendiz"
+              type="password"
+              name="password_aprendiz"
+              value={formData.password_aprendiz}
+              onChange={handleChange}
+              fullWidth
+            />
+          </Grid>
+          {/* Combobox para Tipo de Documento */}
+          <Grid item xs={12} sm={6}>
+            <TextField
+              select
+              label="Tipo de Documento"
+              name="tipo_documento_idTipo_documento"
+              value={formData.tipo_documento_idTipo_documento}
+              onChange={handleChange}
+              fullWidth
+              sx={{ minWidth: 250 }}
+              InputLabelProps={{ sx: { fontSize: "1.2rem" } }}
+              SelectProps={{ sx: { fontSize: "1.2rem", minHeight: "56px" } }}
+            >
+              {tiposDocumento.length > 0 ? (
+                tiposDocumento.map((tipo) => (
+                  <MenuItem
+                    key={tipo.idtipo_documento}
+                    value={tipo.idtipo_documento.toString()}
+                    sx={{ fontSize: "1.2rem" }}
+                  >
+                    {tipo.tipo_documento}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem value="">
+                  <em>Cargando...</em>
+                </MenuItem>
+              )}
+            </TextField>
           </Grid>
 
-          <CardActions>
-            <Button
-              variant="contained"
-              onClick={() => setOpenAprendices(true)}
-              sx={{ ml: 2, mb: 2 }}
+          {/* Combobox para Estado del Aprendiz */}
+          <Grid item xs={12} sm={6}>
+            <TextField
+              select
+              label="Estado del Aprendiz"
+              name="estado_aprendiz_idEstado_aprendiz"
+              value={formData.estado_aprendiz_idEstado_aprendiz}
+              onChange={handleChange}
+              fullWidth
+              sx={{ minWidth: 250 }}
+              InputLabelProps={{ sx: { fontSize: "1.2rem" } }}
+              SelectProps={{ sx: { fontSize: "1.2rem", minHeight: "56px" } }}
             >
-              Agregar Aprendiz
-            </Button>
-          </CardActions>
-        </Card>
+              {estadosAprendiz.length > 0 ? (
+                estadosAprendiz.map((estado) => (
+                  <MenuItem
+                    key={estado.idestado_aprendiz}
+                    value={estado.idestado_aprendiz.toString()}
+                    sx={{ fontSize: "1.2rem" }}
+                  >
+                    {estado.estado_aprendiz}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem value="">
+                  <em>Cargando...</em>
+                </MenuItem>
+              )}
+            </TextField>
+          </Grid>
 
-        {/* Diálogo para agregar aprendiz */}
-        <Dialog open={openAprendices} onClose={() => setOpenAprendices(false)}>
-          <DialogTitle>Agregar Aprendiz</DialogTitle>
-          <DialogContent>
-            {Object.keys(formAprendices).map((key) => (
-              <TextField
-                key={key}
-                label={key.replace(/_/g, " ")}
-                fullWidth
-                margin="dense"
-                value={formAprendices[key as keyof typeof formAprendices]}
-                onChange={(e) =>
-                  setFormAprendices({
-                    ...formAprendices,
-                    [key]: e.target.value,
-                  })
-                }
-              />
-            ))}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenAprendices(false)}>Cancelar</Button>
-            <Button onClick={handleAddAprendiz} color="primary">
-              Agregar
-            </Button>
-          </DialogActions>
-        </Dialog>
+          {/* Combobox para Ficha */}
+          <Grid item xs={12} sm={6}>
+            <TextField
+              select
+              label="Ficha"
+              name="ficha_idFicha"
+              value={formData.ficha_idFicha}
+              onChange={handleChange}
+              fullWidth
+              sx={{ minWidth: 250 }}
+              InputLabelProps={{ sx: { fontSize: "1.2rem" } }}
+              SelectProps={{ sx: { fontSize: "1.2rem", minHeight: "56px" } }}
+            >
+              {fichas.length > 0 ? (
+                fichas.map((ficha) => (
+                  <MenuItem
+                    key={ficha.idficha}
+                    value={ficha.idficha.toString()}
+                    sx={{ fontSize: "1.2rem" }}
+                  >
+                    {ficha.codigo_ficha}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem value="">
+                  <em>Cargando...</em>
+                </MenuItem>
+              )}
+            </TextField>
+          </Grid>
 
-        {/* Diálogo para editar aprendiz */}
-        <Dialog
-          open={openEditAprendiz}
-          onClose={() => setOpenEditAprendiz(false)}
-        >
-          <DialogTitle>Editar Aprendiz</DialogTitle>
-          <DialogContent>
-            {editingAprendiz &&
-              Object.keys(formAprendices).map((key) => (
-                <TextField
-                  key={key}
-                  label={key.replace(/_/g, " ")}
-                  fullWidth
-                  margin="dense"
-                  value={editingAprendiz[key] || ""}
-                  onChange={(e) =>
-                    setEditingAprendiz({
-                      ...editingAprendiz,
-                      [key]: e.target.value,
-                    })
-                  }
-                />
-              ))}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenEditAprendiz(false)}>Cancelar</Button>
-            <Button onClick={handleUpdateAprendiz} color="primary">
-              Actualizar
+          <Grid item xs={12}>
+            <Button variant="contained" onClick={handleSubmit}>
+              {isEditing ? "Actualizar Aprendiz" : "Agregar Aprendiz"}
             </Button>
-          </DialogActions>
-        </Dialog>
-      </Container>
-    </>
+          </Grid>
+        </Grid>
+
+        <Typography variant="h6" sx={{ mt: 4 }}>
+          Lista de Aprendices
+        </Typography>
+        {aprendices.map((a) => {
+          const tipoEncontrado = tiposDocumento.find(
+            (tipo) =>
+              tipo.idtipo_documento.toString() ===
+              a.tipo_documento_idTipo_documento
+          );
+          const estadoEncontrado = estadosAprendiz.find(
+            (estado) =>
+              estado.idestado_aprendiz.toString() ===
+              a.estado_aprendiz_idEstado_aprendiz
+          );
+          const fichaEncontrada = fichas.find(
+            (ficha) => ficha.idficha.toString() === a.ficha_idFicha
+          );
+          return (
+            <Card
+              key={a.idaprendiz}
+              sx={{
+                mt: 2,
+                p: 2,
+                display: "flex",
+                flexDirection: "column",
+                gap: 1,
+              }}
+            >
+              <Typography>
+                <strong>Documento:</strong> {a.documento_aprendiz}
+              </Typography>
+              <Typography>
+                <strong>Nombre:</strong> {a.nombres_aprendiz}
+              </Typography>
+              <Typography>
+                <strong>Apellido:</strong> {a.apellidos_aprendiz}
+              </Typography>
+              <Typography>
+                <strong>Teléfono:</strong> {a.telefono_aprendiz}
+              </Typography>
+              <Typography>
+                <strong>Email:</strong> {a.email_aprendiz}
+              </Typography>
+              <Typography>
+                <strong>Password:</strong> {a.password_aprendiz}
+              </Typography>
+              <Typography>
+                <strong>Ficha:</strong>{" "}
+                {fichaEncontrada
+                  ? fichaEncontrada.codigo_ficha
+                  : a.ficha_idFicha}
+              </Typography>
+              <Typography>
+                <strong>Estado:</strong>{" "}
+                {estadoEncontrado
+                  ? estadoEncontrado.estado_aprendiz
+                  : a.estado_aprendiz_idEstado_aprendiz}
+              </Typography>
+              <Typography>
+                <strong>Tipo Documento:</strong>{" "}
+                {tipoEncontrado
+                  ? tipoEncontrado.tipo_documento
+                  : a.tipo_documento_idTipo_documento}
+              </Typography>
+              <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => editAprendiz(a)}
+                >
+                  Editar
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={() => deleteAprendiz(a.idaprendiz!)}
+                >
+                  Eliminar
+                </Button>
+              </div>
+            </Card>
+          );
+        })}
+      </CardContent>
+    </Card>
   );
 }

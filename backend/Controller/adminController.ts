@@ -193,10 +193,26 @@ export const deleteAprendizC = async (ctx: any) => {
     }
   }
 };
+
+const aprendizSchema = z.object({
+  idAprendiz: z.string().min(1),
+  documento_aprendiz: z.string().min(1),
+  nombre_aprendiz: z.string().min(1),
+  apellido_aprendiz: z.string().min(1),
+  telefono_aprendiz: z.string().min(1),
+  email_aprendiz: z.string().email(),
+  password_aprendiz: z.string().min(6),
+  ficha_idFicha: z.string().min(1),
+  estado_aprendiz_idEstado_aprendiz: z.string().min(1),
+  tipo_documento_idTipo_documento: z.string().min(1),
+});
+
 export const putAprendiz = async (ctx: any) => {
   const { request, response } = ctx;
   try {
     const body = await request.body.json();
+    const validatedData = aprendizSchema.parse(body);
+
     const {
       idAprendiz,
       documento_aprendiz,

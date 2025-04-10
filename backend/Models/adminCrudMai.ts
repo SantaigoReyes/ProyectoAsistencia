@@ -456,3 +456,51 @@ export const ListaFichaEstado = async () => {
     }
   }
 };
+
+//TipoDocumento
+
+export const getTipoDocumento = async (ctx: any) => {
+  const { response } = ctx;
+
+  try {
+    const { rows: tipos } = await Conexion.execute(
+      `SELECT idtipo_documento, tipo_documento, abreviatura_tipo_documento FROM tipo_documento;`
+    );
+
+    response.status = 200;
+    response.body = {
+      success: true,
+      data: tipos,
+    };
+  } catch (error) {
+    console.error("Error al obtener tipo de documento:", error);
+    response.status = 500;
+    response.body = {
+      success: false,
+      msg: "Error al obtener los tipos de documento",
+    };
+  }
+};
+// estado aprendiz
+export const getEstadoAprendiz = async (ctx: any) => {
+  const { response } = ctx;
+
+  try {
+    const { rows: estados } = await Conexion.execute(
+      `SELECT idestado_aprendiz, estado_aprendiz FROM estado_aprendiz;`
+    );
+
+    response.status = 200;
+    response.body = {
+      success: true,
+      data: estados,
+    };
+  } catch (error) {
+    console.error("Error al obtener estado de aprendiz:", error);
+    response.status = 500;
+    response.body = {
+      success: false,
+      msg: "Error al obtener los estados del aprendiz",
+    };
+  }
+};

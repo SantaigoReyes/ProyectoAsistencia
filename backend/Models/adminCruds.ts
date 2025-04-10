@@ -137,7 +137,29 @@ export const addAprendiz = async (aprendiz: Aprendiz) => {
   }
 };
 export const viewAprendiz = async () => {
-  return await Conexion.query("SELECT * FROM  aprendiz");
+  return await Conexion.query(`SELECT 
+    a.idaprendiz,
+    a.documento_aprendiz,
+    a.nombres_aprendiz,
+    a.apellidos_aprendiz,
+    a.telefono_aprendiz,
+    a.email_aprendiz,
+    a.password_aprendiz,
+    a.ficha_idficha,
+    a.estado_aprendiz_idestado_aprendiz,
+    a.tipo_documento_idtipo_documento,
+    
+    ea.estado_aprendiz AS estado,
+    td.tipo_documento,
+    
+    p.codigo_programa,
+    p.nombre_programa
+
+FROM aprendiz a
+JOIN estado_aprendiz ea ON a.estado_aprendiz_idestado_aprendiz = ea.idestado_aprendiz
+JOIN tipo_documento td ON a.tipo_documento_idtipo_documento = td.idtipo_documento
+JOIN ficha f ON a.ficha_idficha = f.idficha
+JOIN programa p ON f.programa_idprograma = p.idprograma;`);
 };
 export const deleteAprendiz = async (id: string) => {
   try {

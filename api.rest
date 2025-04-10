@@ -110,8 +110,7 @@ DELETE http://localhost:8000/programa/4
 ###
 POST http://localhost:8000/aprendiz
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQ0MTE5NzE0fQ.9vdZyK3GQ6-jiVw91pDztAZqq_06RkOb1HUhXFhPgcM
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQ0MjIzNjU2fQ.3MDdnkssd4xR588b6xbArn2fVM7K5sjn60suQNrtc6I
 {
   
   "documento_aprendiz": "987654321",
@@ -131,18 +130,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlc
 ###
 PUT http://localhost:8000/aprendiz
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlcyI6IlNhbnRpYWdvIEFsZWphbmRybyIsInJvbGVzIjpbIkFkbWluaXN0cmFkb3IiXSwiZXhwIjoxNzQ0MjIzNjU2fQ.3MDdnkssd4xR588b6xbArn2fVM7K5sjn60suQNrtc6I
 
 {
-  "idAprendiz":2,
+  "idAprendiz":"8",
   "documento_aprendiz": "123456789",
   "nombre_aprendiz": "santiago",
   "apellido_aprendiz": "Reyes",
   "telefono_aprendiz": "3115336584",
-  "email_aprendiz": "santiago.reyes@example.com",
+  "email_aprendiz": "santiagoju.reyes@example.com",
   "password_aprendiz": "delunoaldiezf",
-  "ficha_idFicha": 1,
-  "estado_aprendiz_idEstado_aprendiz": 1,
-  "tipo_documento_idTipo_documento": 2
+  "ficha_idFicha": "1",
+  "estado_aprendiz_idEstado_aprendiz": "1",
+  "tipo_documento_idTipo_documento": "2"
 }
 ###
 DELETE http://localhost:8000/aprendiz/1
