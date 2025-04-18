@@ -67,12 +67,7 @@ routerPrograma.post(
   roleMiddleware(["Administrador"]),
   postPrograma
 );
-routerPrograma.get(
-  "/programa",
-  authMiddleware,
-
-  getProgram
-);
+routerPrograma.get("/programa", authMiddleware, getProgram);
 routerPrograma.put(
   "/programa",
   authMiddleware,

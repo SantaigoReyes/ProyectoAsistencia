@@ -11,8 +11,19 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
 import React from "react";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Fade from "@mui/material/Fade";
 
 const apiUrl = "http://localhost:8000/aprendiz"; // Endpoint principal para aprendiz
 
@@ -81,7 +92,7 @@ export default function Aprendices() {
   const [tiposDocumento, setTiposDocumento] = useState<TipoDocumento[]>([]);
   const [estadosAprendiz, setEstadosAprendiz] = useState<EstadoAprendiz[]>([]);
   const [fichas, setFichas] = useState<Ficha[]>([]);
-
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
   // Cargar la lista de aprendices
   const fetchAprendices = async () => {
     const res = await fetch(apiUrl, {
@@ -262,30 +273,41 @@ export default function Aprendices() {
   };
 
   const editAprendiz = (aprendiz: Aprendiz) => {
+    console.log("Aprendiz seleccionado para edición:", aprendiz);
     // Verifica si el objeto tiene el id con "idAprendiz" (con A mayúscula) o "idaprendiz" (minúscula)
     const id = aprendiz.idAprendiz || (aprendiz as any).idaprendiz || null;
 
     if (!id) {
       alert("No se encontró el id del aprendiz");
       return;
-    }
+    } // 3) Log de cada campo select para verificar
+    // 🔍 Buscar IDs a partir de los nombres (por si los necesitas en otro formato)
+    const tipoDoc = tiposDocumento.find(
+      (t) => t.tipo_documento === aprendiz.tipo_documento
+    );
+    const estado = estadosAprendiz.find(
+      (e) => e.estado_aprendiz === aprendiz.estado
+    );
+    const ficha = fichas.find((f) => f.idficha === aprendiz.ficha_idficha);
 
+    console.log("·· tipo_documento encontrado:", tipoDoc);
+    console.log("·· estado_aprendiz encontrado:", estado);
+    console.log("·· ficha encontrada:", ficha);
     setFormEdit({
       documento_aprendiz: aprendiz.documento_aprendiz || "",
-      nombre_aprendiz: aprendiz.nombre_aprendiz || "",
-      apellido_aprendiz: aprendiz.apellido_aprendiz || "",
+      nombre_aprendiz: aprendiz.nombre_aprendiz || aprendiz.nombres_aprendiz,
+      apellido_aprendiz:
+        aprendiz.apellido_aprendiz || aprendiz.apellidos_aprendiz,
       telefono_aprendiz: aprendiz.telefono_aprendiz || "",
       email_aprendiz: aprendiz.email_aprendiz || "",
       password_aprendiz: aprendiz.password_aprendiz || "",
-      ficha_idFicha: aprendiz.ficha_idFicha
-        ? String(aprendiz.ficha_idFicha)
+      // 🧠 Asigna el ID como string al form, que es lo que necesita el select
+      ficha_idFicha: ficha ? String(ficha.idficha) : "",
+      estado_aprendiz_idEstado_aprendiz: estado
+        ? String(estado.idestado_aprendiz)
         : "",
-      estado_aprendiz_idEstado_aprendiz:
-        aprendiz.estado_aprendiz_idEstado_aprendiz
-          ? String(aprendiz.estado_aprendiz_idEstado_aprendiz)
-          : "",
-      tipo_documento_idTipo_documento: aprendiz.tipo_documento_idTipo_documento
-        ? String(aprendiz.tipo_documento_idTipo_documento)
+      tipo_documento_idTipo_documento: tipoDoc
+        ? String(tipoDoc.idtipo_documento)
         : "",
     });
     setEditingId(id);
@@ -468,72 +490,106 @@ export default function Aprendices() {
       </Card>
 
       {/* Lista de aprendices */}
-      <Card sx={{ p: 2, maxWidth: 1000, margin: "auto", mt: 4 }}>
+
+      <Card sx={{ p: 2, maxWidth: 1700, margin: "auto", mt: 4, boxShadow: 3 }}>
         <CardContent>
-          <Typography variant="h6" sx={{ mt: 4 }}>
+          <Typography variant="h6" gutterBottom>
             Lista de Aprendices
           </Typography>
-          {aprendices.map((a) => (
-            <Card
-              key={a.idAprendiz}
-              sx={{
-                mt: 2,
-                p: 2,
-                display: "flex",
-                flexDirection: "column",
-                gap: 1,
-              }}
-            >
-              <Typography>
-                <strong>Documento:</strong> {a.documento_aprendiz}
-              </Typography>
-              <Typography>
-                <strong>Nombre:</strong>{" "}
-                {a.nombres_aprendiz || a.nombre_aprendiz}
-              </Typography>
-              <Typography>
-                <strong>Apellido:</strong>{" "}
-                {a.apellidos_aprendiz || a.apellido_aprendiz}
-              </Typography>
-              <Typography>
-                <strong>Teléfono:</strong> {a.telefono_aprendiz}
-              </Typography>
-              <Typography>
-                <strong>Email:</strong> {a.email_aprendiz}
-              </Typography>
-              <Typography>
-                <strong>Password:</strong> {a.password_aprendiz}
-              </Typography>
-              <Typography>
-                <strong>Ficha:</strong> {a.codigo_programa}
-              </Typography>
-              <Typography>
-                <strong>Programa:</strong> {a.nombre_programa}
-              </Typography>
-              <Typography>
-                <strong>Estado:</strong> {a.estado}
-              </Typography>
-              <Typography>
-                <strong>Tipo Documento:</strong> {a.tipo_documento}
-              </Typography>
-              <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => editAprendiz(a)}
-                >
-                  Editar
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => deleteAprendiz(a.idAprendiz!)}
-                >
-                  Eliminar
-                </Button>
-              </div>
-            </Card>
-          ))}
+
+          <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
+            <Table size="small" aria-label="tabla de aprendices">
+              <TableHead>
+                <TableRow sx={{ backgroundColor: "#1976d2" }}>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                    Documento
+                  </TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                    Nombre
+                  </TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                    Apellido
+                  </TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                    Teléfono
+                  </TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                    Email
+                  </TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                    Ficha
+                  </TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                    Programa
+                  </TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                    Código Programa
+                  </TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                    Estado
+                  </TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                    Tipo Doc.
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ color: "white", fontWeight: "bold" }}
+                  >
+                    Acciones
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {aprendices.map((a) => {
+                  const id = a.idAprendiz || a.idaprendiz;
+
+                  return (
+                    <Fade in={true} timeout={700}>
+                      <TableRow
+                        key={id}
+                        sx={{
+                          backgroundColor:
+                            highlightedId === id ? "#bbdefb" : "inherit",
+                          transition: "background-color 0.5s ease",
+                          "&:hover": { backgroundColor: "#f5f5f5" },
+                        }}
+                      >
+                        <TableCell>{a.documento_aprendiz}</TableCell>
+                        <TableCell>
+                          {a.nombres_aprendiz || a.nombre_aprendiz}
+                        </TableCell>
+                        <TableCell>
+                          {a.apellidos_aprendiz || a.apellido_aprendiz}
+                        </TableCell>
+                        <TableCell>{a.telefono_aprendiz}</TableCell>
+                        <TableCell>{a.email_aprendiz}</TableCell>
+                        <TableCell>{a.codigo_ficha}</TableCell>
+                        <TableCell>{a.nombre_programa}</TableCell>
+                        <TableCell>{a.codigo_programa}</TableCell>
+                        <TableCell>{a.estado}</TableCell>
+                        <TableCell>{a.tipo_documento}</TableCell>
+                        <TableCell align="center">
+                          <IconButton
+                            size="small"
+                            onClick={() => editAprendiz(a)}
+                          >
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={() => deleteAprendiz(id)}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    </Fade>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </CardContent>
       </Card>
 

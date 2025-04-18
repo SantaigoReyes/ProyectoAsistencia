@@ -153,7 +153,9 @@ export const viewAprendiz = async () => {
     td.tipo_documento,
     
     p.codigo_programa,
-    p.nombre_programa
+    p.nombre_programa,
+    
+    f.codigo_ficha
 
 FROM aprendiz a
 JOIN estado_aprendiz ea ON a.estado_aprendiz_idestado_aprendiz = ea.idestado_aprendiz
